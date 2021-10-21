@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th = "http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" type = "text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" type = "text/css" th:href="@{/css/home.css}">
+
+</head>
+<body>
+
+<div  class="d-flex flex-column justify-content-between" style="height:100vh">
+    <div th:replace="home :: navbar"></div>
+    <div class="container-fluid text-center " style="margin-top: 150px;">
+
+        <form th:action="@{/user/save}" method="post" th:object="${user}" style="max-width: 350px; margin: 0 auto;">
+
+            <div class="border border-secondary p-3 rounded">
+                <p>Register Now</p>
+                <p>
+                    <input type="text" name="username" class="form-control" placeholder="username" th:field = "*{username}" required autofocus/>
+                </p>
+                <p>
+                    <input type="text" name="firstName" class="form-control" placeholder="First Name" th:field = "*{firstName}" required />
+                </p>
+                <p>
+                    <input type="text" name="lastName" class="form-control" placeholder="Last Name" th:field = "*{lastName}" required />
+                </p>
+
+                <p>
+                    <input type="text" name="email" class="form-control" placeholder="Email Address" th:field = "*{email}" required />
+                </p>
+
+                <p>
+                    <input type="text" name="role" class="form-control" placeholder="Role" th:field = "*{role}" required/>
+                </p>
+                <p>
+                    <input type="password" name="password" class="form-control" placeholder="Password" th:field = "*{password}" required />
+                </p>
+
+                <p>
+                    <input type="submit" value="Register" class="btn btn-primary" />
+                </p>
+            </div>
+        </form>
+    </div>
+    <div th:replace="home :: footer"></div>
+</div>
+</body>
+
+<script th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0/js/bootstrap.min.js}"></script>
+</html>

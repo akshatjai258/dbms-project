@@ -1,0 +1,80 @@
+
+body::-webkit-scrollbar{
+    width: 7px;
+}
+body::-webkit-scrollbar-thumb{
+    width: 10px;
+    background-color: #343A40;
+    border: 0px;
+    border-radius: 12px;
+}
+.nav-item{
+    margin: 0 .8rem;
+}
+.masthead {
+    height: 100vh;
+    min-height: 500px;
+    background-image: url('https://source.unsplash.com/pUAM5hPaCRI/1920x1080');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.searchbar{
+    width:50%;
+    margin: 0 auto;
+}
+
+
+.social-card-header i {
+    font-size: 32px;
+    color: #FFF;
+}
+.share:hover {
+    text-decoration: none;
+    opacity: 0.8;
+}
+
+
+.categories{
+    background-color: #F7F8F9;
+}
+
+.cards {
+    transition: all 0.2s ease;
+    cursor: pointer
+}
+
+.cards:hover {
+    box-shadow: 5px 6px 6px 2px #e9ecef;
+    transform: scale(1.1);
+}
+
+.footer{
+    background-color: #1D2636;
+    color:white;
+}
+.design{
+    padding: 0.5rem 1rem;
+    background-color: #EBF6EC;
+    color: #5BAF55;
+    border: 0px;
+    border-radius: 25px;
+}
+.enrolled{
+    font-weight: bold;
+}
+
+.avatar {
+    vertical-align: middle;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+
+}
+.form-control:focus {
+    border-color: black;
+    box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0.25);
+}
+.paragraph-parent p{
+    font-size: 0.8rem;
+}
