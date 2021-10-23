@@ -1,12 +1,19 @@
 package com.project.elearningwebapp.dao;
 
 import com.project.elearningwebapp.models.User;
+import com.project.elearningwebapp.utils.PreparedStatementUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -24,13 +31,30 @@ public class userDAOImpl implements userDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private PreparedStatementUtil preparedStatementUtil;
+
 
 
     @Override
-    public void save(User user) {
+    public User save(User user) {
         String sql = "INSERT INTO users (username, password, enabled, first_name, last_name, email_id, role) "
                 + "VALUES (?, ?, ?, ?,?,?,?)";
-        jdbcTemplate.update(sql, user.getUsername(), (user.getPassword()), user.getEnabled(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(new PreparedStatementCreator(){
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                PreparedStatement preparedStatement = con.prepareStatement(sql, new String[] { "student_id" });
+                preparedStatementUtil.setParameters(preparedStatement, user.getUsername(), user.getPassword(),user.getEnabled(), user.getFirstName(),
+                         user.getLastName(), user.getEmail(), user.getRole());
+                return preparedStatement;
+            }
+
+        }, keyHolder);
+
+        int userId = keyHolder.getKey().intValue();
+        user.setUser_id(userId);
+        return user;
     }
 
     @Override

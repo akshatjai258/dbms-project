@@ -31,6 +31,7 @@
                 </li>
 
 
+
             </ul>
 
             <div th:if="${securityservice.findLoggedInUserId() == 0}">
@@ -39,7 +40,8 @@
             </div>
 
             <div th:if="${securityservice.findLoggedInUserId() != 0}">
-                <span style="color: white">Welcome <p th:text="${securityservice.findLoggedInUsername()}"/> </span>
+                <p class="m-0 mx-2" style="color:white; display: inline" th:text="${securityservice.findLoggedInUsername()}"/>
+                <a th:href="@{/user/logout}"><button type="button" class="btn btn-success mr-3">logout</button></a>
 
             </div>
         </div>
@@ -279,86 +281,47 @@
 
 </section>
 
+
+
+
+
 <section class="categories py-5">
+
     <div class="container text-center">
 
         <div >
             <h1>Explore Featured Categories</h1>
         </div>
-            <div class="row g-0 mt-3">
-            <div class="col-md-3 ">
-                <div class="cards border">
-                    <div class="first bg-white p-4 text-center"> <img src="https://img.icons8.com/ios-filled/50/000000/web-design.png"/>
-                        <h5>Web Designing</h5>
-                        <p>10 courses</p>
+
+        <div class="row g0">
+        <th:block th:each="category, iterStat : ${categories}">
+
+
+                <div class="col-md-3 my-2">
+                    <div class="cards border">
+                        <div class="first bg-white p-4 text-center"> <img th:src= "@{'/images/' + ${category.geLogoImagePath()} }"/>
+                            <h5>[[${category.CategoryName}]]</h5>
+                            <p></p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3 ">
-                <div class="cards border">
-                    <div class=" second bg-white p-4 text-center"><img src="https://img.icons8.com/external-kiranshastry-solid-kiranshastry/50/000000/external-web-development-coding-kiranshastry-solid-kiranshastry.png"/>
-                        <h5>Development</h5>
-                        <p>10 courses</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="cards border">
-                    <div class=" third bg-white p-4 text-center"><img src="https://img.icons8.com/ios-filled/50/000000/heart-health.png"/>
-                        <h5>Health and Fitness</h5>
-                        <p>10 courses</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="cards border">
-                    <div class=" second bg-white p-4 text-center"> <img src="https://img.icons8.com/ios-filled/50/000000/camera--v1.png"/>
-                        <h5>Photography</h5>
-                        <p>10 courses</p>
-                    </div>
-                </div>
-            </div>
+
+        </th:block>
         </div>
 
-        <div class="row g-0 mt-3">
-            <div class="col-md-3 ">
-                <div class="cards border">
-                    <div class="first bg-white p-4 text-center"> <img src="https://img.icons8.com/ios-filled/50/000000/web-design.png"/>
-                        <h5>Web Designing</h5>
-                        <p>10 courses</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 ">
-                <div class="cards border">
-                    <div class=" second bg-white p-4 text-center"><img src="https://img.icons8.com/external-kiranshastry-solid-kiranshastry/50/000000/external-web-development-coding-kiranshastry-solid-kiranshastry.png"/>
-                        <h5>Development</h5>
-                        <p>10 courses</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="cards border">
-                    <div class=" third bg-white p-4 text-center"><img src="https://img.icons8.com/ios-filled/50/000000/heart-health.png"/>
-                        <h5>Health and Fitness</h5>
-                        <p>10 courses</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="cards border">
-                    <div class=" second bg-white p-4 text-center"> <img src="https://img.icons8.com/ios-filled/50/000000/camera--v1.png"/>
-                        <h5>Photography</h5>
-                        <p>10 courses</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    </div>
+    <div class="row g0">
+
+
     </div>
 
 </section>
 
-<section  >
+
+
+
+
+<section >
     <!-- Footer -->
     <footer class="page-footer font-small special-color-dark pt-4 footer" th:fragment="footer">
 

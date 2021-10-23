@@ -1,5 +1,8 @@
 package com.project.elearningwebapp.models;
 
+import java.beans.Transient;
+
+
 public class Category {
 
     private int categoryId;
@@ -17,7 +20,11 @@ public class Category {
 
     }
 
-
+    @Transient
+    public String geLogoImagePath(){
+        if(logo == null || categoryId == 0) return null;
+        return "category-logos/" + categoryId +  "/" + logo;
+    }
     @Override
     public String toString() {
         return "Category{" +

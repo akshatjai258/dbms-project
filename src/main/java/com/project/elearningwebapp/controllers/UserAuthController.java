@@ -1,7 +1,9 @@
 package com.project.elearningwebapp.controllers;
 
+import com.project.elearningwebapp.dao.StudentDAO;
 import com.project.elearningwebapp.dao.userDAO;
 import com.project.elearningwebapp.models.Category;
+import com.project.elearningwebapp.models.Student;
 import com.project.elearningwebapp.models.User;
 import com.project.elearningwebapp.services.SecurityService;
 import com.project.elearningwebapp.services.SecurityServiceImpl;
@@ -27,6 +29,9 @@ public class UserAuthController {
 
     @Autowired
     private userDAO dao;
+
+    @Autowired
+    private StudentDAO stdao;
 
 
     @GetMapping("/user/login")
@@ -57,7 +62,17 @@ public class UserAuthController {
         user.setEnabled(true);
         String password = user.getPassword();
         user.setPassword(passwordEncoder.encode(password));
-        dao.save(user);
+        User savedUser = dao.save(user);
+
+        System.out.println(savedUser.getRole());
+        if(savedUser.getRole().equals("ROLE_STUDENT")){
+
+            int stId = stdao.getStudentIdByUserId(savedUser.getUser_id());
+            Student savedStudent = stdao.getByUserId(savedUser.getUser_id());
+
+            savedStudent.setStudentId(stId);
+        }
+
         return "redirect:/";
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CategoryDAO {
 
-    public void save(Category category);
+    public Category save(Category category);
 
     public List<Category>findAll();
 

@@ -58,7 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
 
-                    .antMatchers("/", "/user/**", "/css/**", "/js/**", "/privacy-policy", "/subjects", "/courses", "/webjars/**", "/resources/**", "/static/+**").permitAll()
+                    .antMatchers("/", "/user/**", "/css/**", "/js/**", "/privacy-policy", "/subjects", "/courses", "/webjars/**", "/resources/**", "/static/**","/images/**" ).permitAll()
                     .antMatchers("/student/**").hasRole("STUDENT")
                     .antMatchers("/teacher/**").hasRole("TEACHER")
                     .antMatchers("/admin/**").hasRole("ADMIN")
@@ -73,7 +73,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .tokenRepository(persistentTokenRepository())
                 .userDetailsService(this.getUserDetailService())
                 .and()
+                .logout()
+                .logoutUrl("/user/logout")
+                .and()
                 .csrf().disable();
+
 
     }
 
