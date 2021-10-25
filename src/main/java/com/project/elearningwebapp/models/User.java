@@ -7,26 +7,40 @@ public class User {
     private String password;
     private Boolean enabled;
     private String role;
-    private String email;
+    private String emailId;
     private String firstName;
 
-    public User(int user_id, String username, String password, Boolean enabled, String role, String email, String firstName, String lastName) {
+    public User(int user_id, String username, String password, Boolean enabled, String role, String emailId, String firstName, String lastName) {
         this.user_id = user_id;
         this.username = username;
         this.password = password;
         this.enabled = enabled;
         this.role = role;
-        this.email = email;
+        this.emailId = emailId;
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
+    @Override
+    public String toString() {
+        return "User{" +
+                "user_id=" + user_id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", enabled=" + enabled +
+                ", role='" + role + '\'' +
+                ", emailId='" + emailId + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public String getEmailId() {
+        return emailId;
+    }
+
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
     }
 
     public String getFirstName() {
@@ -92,14 +106,4 @@ public class User {
         this.role = role;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "user_id=" + user_id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", enabled=" + enabled +
-                ", role='" + role + '\'' +
-                '}';
-    }
 }

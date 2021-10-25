@@ -59,6 +59,7 @@ public class UserAuthController {
 
     @PostMapping("/user/save")
     public String SaveUser(@ModelAttribute("user") User user){
+        System.out.println(user);
         user.setEnabled(true);
         String password = user.getPassword();
         user.setPassword(passwordEncoder.encode(password));

@@ -44,9 +44,9 @@ public class userDAOImpl implements userDAO {
         jdbcTemplate.update(new PreparedStatementCreator(){
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                PreparedStatement preparedStatement = con.prepareStatement(sql, new String[] { "student_id" });
+                PreparedStatement preparedStatement = con.prepareStatement(sql, new String[] { "user_id" });
                 preparedStatementUtil.setParameters(preparedStatement, user.getUsername(), user.getPassword(),user.getEnabled(), user.getFirstName(),
-                         user.getLastName(), user.getEmail(), user.getRole());
+                         user.getLastName(), user.getEmailId(), user.getRole());
                 return preparedStatement;
             }
 
