@@ -1,11 +1,14 @@
 package com.project.elearningwebapp.models;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Student {
     private int studentId;
     private String gender;
-    private Date dateOfBirth;
+    private String dateOfBirth;
     private String houseNo;
     private String city;
     private String street;
@@ -36,7 +39,7 @@ public class Student {
 
     }
 
-    public Student(int studentId, String gender, Date dateOfBirth, String houseNo, String city, String street, String country, String state, String profilePic, String pincode, User user) {
+    public Student(int studentId, String gender, String dateOfBirth, String houseNo, String city, String street, String country, String state, String profilePic, String pincode, User user) {
         this.studentId = studentId;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
@@ -66,11 +69,11 @@ public class Student {
         this.gender = gender;
     }
 
-    public Date getDateOfBirth() {
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -121,4 +124,10 @@ public class Student {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public String getProfilePath(){
+        return "/images/profile/"+this.getStudentId() + "/" + this.getProfilePic();
+    }
+
+
 }

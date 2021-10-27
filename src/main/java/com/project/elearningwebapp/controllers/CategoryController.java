@@ -43,7 +43,7 @@ public class CategoryController {
 
     @PostMapping("/category/save")
     public String save(@ModelAttribute("category") Category category ,@RequestParam("fileImage") MultipartFile multipartFile) throws IOException {
-
+//        System.out.println(category.getCategoryId());
 
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 

@@ -33,7 +33,7 @@ public class StudentDAOImpl implements StudentDAO {
 
     @Override
     public Student save(Student student) {
-        String sql = "INSERT INTO students (gender, dob, country, state, city, street, pincode, house_no, user_id, profile_pic) VALUES(?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO students (gender, date_of_birth, country, state, city, street, pincode, house_no, user_id, profile_pic) VALUES(?,?,?,?,?,?,?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator(){
             @Override
@@ -96,8 +96,9 @@ public class StudentDAOImpl implements StudentDAO {
 
     @Override
     public void update(Student student) {
-        String sql = "UPDATE students SET gender = ?, dob = ?, house_no = ?,country = ?, street = ?, city = ?, state = ?, "
+        String sql = "UPDATE students SET gender = ?, date_of_birth = ?, house_no = ?,country = ?, street = ?, city = ?, state = ?, "
                 + "pincode = ?, profile_pic = ? WHERE student_id = ?";
+
         jdbcTemplate.update(sql, student.getGender(), student.getDateOfBirth(), student.getHouseNo(),student.getCountry(),
                 student.getStreet(), student.getCity(), student.getState(),
                 student.getPincode(), student.getProfilePic(), student.getStudentId());
