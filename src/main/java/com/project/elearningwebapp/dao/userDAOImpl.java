@@ -142,9 +142,9 @@ public class userDAOImpl implements userDAO {
 
     @Override
     public void update(User user) {
-        String sql = "UPDATE users SET username = ?, "
-                + "enabled = ? WHERE user_id = ?";
-        jdbcTemplate.update(sql, user.getUsername(), user.getEnabled(), user.getUser_id());
+        String sql = "UPDATE users SET first_name=?, last_name=?,"
+                + "email_id = ? WHERE user_id = ?";
+        jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getEmailId(), user.getUser_id());
     }
 
     @Override

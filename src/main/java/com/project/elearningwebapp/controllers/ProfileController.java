@@ -2,7 +2,7 @@ package com.project.elearningwebapp.controllers;
 
 
 import com.project.elearningwebapp.dao.StudentDAO;
-import com.project.elearningwebapp.models.Category;
+import com.project.elearningwebapp.dao.userDAO;
 import com.project.elearningwebapp.models.MyUserDetails;
 import com.project.elearningwebapp.models.Student;
 import com.project.elearningwebapp.models.User;
@@ -26,6 +26,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 public class ProfileController {
@@ -33,74 +35,105 @@ public class ProfileController {
     private StudentDAO stdao;
 
     @Autowired
+    private userDAO udao;
+
+    @Autowired
     private SecurityService securityService;
 
     @GetMapping("/user/account")
     public String viewLoggedInUserDetails(@AuthenticationPrincipal MyUserDetails loggedUser, Model model){
-//        int UserId = loggedUser.getUser().getUser_id();
 
         User user = loggedUser.getUser();
+
+        model.addAttribute("securityservice", securityService);
+        model.addAttribute("user", user);
+
+        if(user.getRole().equals("ROLE_STUDENT")){
+            return "redirect:/student/account";
+
+        }
+        else if(user.getRole().equals("ROLE_TEACHER")){
+            return "redirect:/teacher/account";
+        }
+        else{
+            return  "redirect:/admin/account";
+        }
+    }
+
+
+    @GetMapping("/student/account")
+    public String viewStudentProfile(@AuthenticationPrincipal MyUserDetails loggedUser, Model model){
+
+        User user = loggedUser.getUser();
+
         model.addAttribute("securityservice", securityService);
         model.addAttribute("user", user);
 
         if(user.getRole().equals("ROLE_STUDENT")){
             Student student = stdao.getByUserId(user.getUser_id());
             model.addAttribute("student", student);
-            System.out.println(student.getStudentId());
-        }
-        else if(user.getRole().equals("ROLE_TEACHER")){
-            model.addAttribute("userextra", null);
+
         }
         else{
-            model.addAttribute("userextra", null);
+            return "redirect:/user/account";
         }
 
-        return "loggedInUserProfile";
+        return "LoggedStudentProfile";
     }
-    @PostMapping("/profile/update")
-    public String saveDetails(@ModelAttribute Student student, @AuthenticationPrincipal MyUserDetails loggedUser, @RequestParam("fileImage") MultipartFile multipartFile) throws IOException{
+
+    @PostMapping("student/profile/update")
+    public String saveDetails(@ModelAttribute("student") Student student, @ModelAttribute("user") User user, @AuthenticationPrincipal MyUserDetails loggedUser, @RequestParam("fileImage") MultipartFile multipartFile) throws IOException{
 
         student.setStudentId(stdao.getByUserId(loggedUser.getUser().getUser_id()).getStudentId());
+        user.setUser_id(loggedUser.getUser().getUser_id());
 
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        System.out.println(fileName);
+
+        udao.update(user);
+        loggedUser.setFirstName(user.getFirstName());
+        loggedUser.setLastName(user.getLastName());
+        loggedUser.setEmailId(user.getEmailId());
+
+
+        if(student.getDateOfBirth().equals("")){
+            student.setDateOfBirth(stdao.getByUserId(loggedUser.getUser().getUser_id()).getDateOfBirth());
+        }
+        if(multipartFile.isEmpty()){
+
+            fileName = stdao.getByUserId(loggedUser.getUser().getUser_id()).getProfilePic();
+        }
+        else{
+            Student stud = stdao.getByUserId(loggedUser.getUser().getUser_id());
+            int x = stud.getNoOfPhotosUploaded();
+            x++;
+            String id = stud.getStudentId() + "_" + Integer.toString(x);
+            student.setNoOfPhotosUploaded(x);
+            fileName = id+"_"+fileName;
+
+            File fi = new ClassPathResource("static/images").getFile();
+
+            String uploadDir = fi.getAbsolutePath() +"/profile/";
+
+            Path uploadPath = Paths.get(uploadDir);
+            if(!Files.exists(uploadPath)){
+                Files.createDirectories(uploadPath);
+            }
+
+            try {
+                InputStream inputStream = multipartFile.getInputStream();
+                Path filePath = uploadPath.resolve(fileName);
+
+                Files.copy(inputStream,filePath, StandardCopyOption.REPLACE_EXISTING);
+            }catch (IOException e){
+                throw new IOException("file could not be saved");
+            }
+        }
+
         student.setProfilePic(fileName);
 
-        File fi = new ClassPathResource("static/images").getFile();
-
         stdao.update(student);
-        String uploadDir = fi.getAbsolutePath() +"/profile/"+ student.getStudentId() + "/";
-
-
-
-        Path uploadPath = Paths.get(uploadDir);
-        System.out.println(uploadPath);
-
-
-
-        if(!Files.exists(uploadPath)){
-            Files.createDirectories(uploadPath);
-        }
-
-
-        try {
-            InputStream inputStream = multipartFile.getInputStream();
-            Path filePath = uploadPath.resolve(fileName);
-            System.out.println(filePath.toFile().getAbsolutePath());
-            Files.copy(inputStream,filePath, StandardCopyOption.REPLACE_EXISTING);
-        }catch (IOException e){
-            throw new IOException("file could not be saved");
-        }
-
-
-
-
-
-
-
-
-
         return "redirect:/user/account";
     }
+
 
 }

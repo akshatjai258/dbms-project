@@ -24,6 +24,18 @@ public class MyUserDetails implements UserDetails {
         return grantList;
     }
 
+    public void setFirstName(String fname){
+        this.user.setFirstName(fname);
+    }
+
+    public void setLastName(String lname){
+        this.user.setLastName(lname);
+    }
+
+    public void setEmailId(String email){
+        this.user.setEmailId(email);
+    }
+
     @Override
     public String getPassword() {
         return this.user.getPassword();

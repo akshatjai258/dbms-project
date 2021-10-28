@@ -97,11 +97,11 @@ public class StudentDAOImpl implements StudentDAO {
     @Override
     public void update(Student student) {
         String sql = "UPDATE students SET gender = ?, date_of_birth = ?, house_no = ?,country = ?, street = ?, city = ?, state = ?, "
-                + "pincode = ?, profile_pic = ? WHERE student_id = ?";
+                + "pincode = ?, profile_pic = ?, no_of_photos_uploaded =? WHERE student_id = ?";
 
         jdbcTemplate.update(sql, student.getGender(), student.getDateOfBirth(), student.getHouseNo(),student.getCountry(),
                 student.getStreet(), student.getCity(), student.getState(),
-                student.getPincode(), student.getProfilePic(), student.getStudentId());
+                student.getPincode(), student.getProfilePic(), student.getNoOfPhotosUploaded(), student.getStudentId());
     }
 
     @Override
