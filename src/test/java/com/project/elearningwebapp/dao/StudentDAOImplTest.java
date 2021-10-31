@@ -42,7 +42,7 @@ class StudentDAOImplTest {
     @Test
     void save() {
         Student st = new Student();
-        User u = udao.get(1);
+        User u = udao.get(62);
 
         st.setUser(u);
         st.setCity("chanderi");

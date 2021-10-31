@@ -137,7 +137,7 @@ public class Student {
     }
 
     public String getProfilePath(){
-        return "/images/profile/" + this.getProfilePic();
+        return "/images/profile/student/" + this.getProfilePic();
     }
 
 

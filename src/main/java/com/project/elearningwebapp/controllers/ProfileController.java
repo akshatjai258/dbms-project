@@ -2,9 +2,11 @@ package com.project.elearningwebapp.controllers;
 
 
 import com.project.elearningwebapp.dao.StudentDAO;
+import com.project.elearningwebapp.dao.TeacherDAO;
 import com.project.elearningwebapp.dao.userDAO;
 import com.project.elearningwebapp.models.MyUserDetails;
 import com.project.elearningwebapp.models.Student;
+import com.project.elearningwebapp.models.Teacher;
 import com.project.elearningwebapp.models.User;
 import com.project.elearningwebapp.services.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,11 @@ public class ProfileController {
 
     @Autowired
     private SecurityService securityService;
+
+    @Autowired
+    private TeacherDAO tdao;
+
+
 
     @GetMapping("/user/account")
     public String viewLoggedInUserDetails(@AuthenticationPrincipal MyUserDetails loggedUser, Model model){
@@ -82,7 +89,7 @@ public class ProfileController {
     }
 
     @PostMapping("student/profile/update")
-    public String saveDetails(@ModelAttribute("student") Student student, @ModelAttribute("user") User user, @AuthenticationPrincipal MyUserDetails loggedUser, @RequestParam("fileImage") MultipartFile multipartFile) throws IOException{
+    public String updateStudentProfile(@ModelAttribute("student") Student student, @ModelAttribute("user") User user, @AuthenticationPrincipal MyUserDetails loggedUser, @RequestParam("fileImage") MultipartFile multipartFile) throws IOException{
 
         student.setStudentId(stdao.getByUserId(loggedUser.getUser().getUser_id()).getStudentId());
         user.setUser_id(loggedUser.getUser().getUser_id());
@@ -112,7 +119,7 @@ public class ProfileController {
 
             File fi = new ClassPathResource("static/images").getFile();
 
-            String uploadDir = fi.getAbsolutePath() +"/profile/";
+            String uploadDir = fi.getAbsolutePath() +"/profile/student/";
 
             Path uploadPath = Paths.get(uploadDir);
             if(!Files.exists(uploadPath)){
@@ -134,6 +141,82 @@ public class ProfileController {
         stdao.update(student);
         return "redirect:/user/account";
     }
+
+
+
+    @GetMapping("/teacher/account")
+    public String viewTeacherProfile(@AuthenticationPrincipal MyUserDetails loggedUser, Model model){
+
+        User user = loggedUser.getUser();
+
+
+
+        model.addAttribute("securityservice", securityService);
+        model.addAttribute("user", user);
+
+        if(user.getRole().equals("ROLE_TEACHER")){
+            Teacher teacher = tdao.getByUserId(user.getUser_id());
+            model.addAttribute("teacher", teacher);
+        }
+        else{
+            return "redirect:/user/account";
+        }
+
+        return "LoggedTeacherProfile";
+    }
+
+    @PostMapping("teacher/profile/update")
+    public String updateTeacherDetails(@ModelAttribute("teacher") Teacher teacher, @ModelAttribute("user") User user, @AuthenticationPrincipal MyUserDetails loggedUser, @RequestParam("fileImage") MultipartFile multipartFile) throws IOException{
+
+        System.out.println("hello");
+        teacher.setTeacherId(tdao.getByUserId(loggedUser.getUser().getUser_id()).getTeacherId());
+        user.setUser_id(loggedUser.getUser().getUser_id());
+        System.out.println(teacher);
+
+        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+
+        udao.update(user);
+        loggedUser.setFirstName(user.getFirstName());
+        loggedUser.setLastName(user.getLastName());
+        loggedUser.setEmailId(user.getEmailId());
+
+
+        if(multipartFile.isEmpty()){
+            fileName = tdao.getByUserId(loggedUser.getUser().getUser_id()).getProfilePic();
+        }
+        else{
+            Teacher teacher1 = tdao.getByUserId(loggedUser.getUser().getUser_id());
+            int x = teacher1.getNoOfPhotosUploaded();
+            x++;
+            String id = teacher1.getTeacherId() + "_" + Integer.toString(x);
+            teacher.setNoOfPhotosUploaded(x);
+            fileName = id+"_"+fileName;
+
+            File fi = new ClassPathResource("static/images").getFile();
+
+            String uploadDir = fi.getAbsolutePath() +"/profile/teacher/";
+
+            Path uploadPath = Paths.get(uploadDir);
+            if(!Files.exists(uploadPath)){
+                Files.createDirectories(uploadPath);
+            }
+
+            try {
+                InputStream inputStream = multipartFile.getInputStream();
+                Path filePath = uploadPath.resolve(fileName);
+
+                Files.copy(inputStream,filePath, StandardCopyOption.REPLACE_EXISTING);
+            }catch (IOException e){
+                throw new IOException("file could not be saved");
+            }
+        }
+
+        teacher.setProfilePic(fileName);
+
+        tdao.update(teacher);
+        return "redirect:/user/account";
+    }
+
 
 
 }
