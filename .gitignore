@@ -32,7 +32,7 @@ build/
 
 #video
 
-/Uploads/*
+!**/static/Uploads/**
 
 ### VS Code ###
 .vscode/
