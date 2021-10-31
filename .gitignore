@@ -33,6 +33,7 @@ build/
 #video
 
 !**/static/Uploads/
+!/target/classes/static/Uploads/
 
 ### VS Code ###
 .vscode/
