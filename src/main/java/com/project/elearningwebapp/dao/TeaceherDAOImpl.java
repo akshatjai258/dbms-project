@@ -24,9 +24,8 @@ public class TeaceherDAOImpl implements TeacherDAO{
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public TeaceherDAOImpl(JdbcTemplate jdbcTemplate, PreparedStatementUtil preparedStatementUtil) {
+    public TeaceherDAOImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.preparedStatementUtil = preparedStatementUtil;
     }
 
 

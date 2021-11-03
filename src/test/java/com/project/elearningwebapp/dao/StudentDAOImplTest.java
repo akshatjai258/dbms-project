@@ -62,7 +62,7 @@ class StudentDAOImplTest {
     @Test
     void getAll() {
         List<Student>students = dao.getAll();
-        System.out.println(students.get(0).getStudentId());
+        System.out.println(students);
     }
 
     @Test

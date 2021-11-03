@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public class TeacherRowMapper implements RowMapper {
 
     @Override
-    public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+    public Teacher mapRow(ResultSet rs, int rowNum) throws SQLException {
         User user = (new BeanPropertyRowMapper<>(User.class)).mapRow(rs, rowNum);
 
         Teacher teacher = (new BeanPropertyRowMapper<>(Teacher.class)).mapRow(rs, rowNum);

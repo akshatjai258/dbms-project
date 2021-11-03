@@ -140,5 +140,21 @@ public class Student {
         return "/images/profile/student/" + this.getProfilePic();
     }
 
-
+    @Override
+    public String toString() {
+        return "Student{" +
+                "studentId=" + studentId +
+                ", gender='" + gender + '\'' +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
+                ", houseNo='" + houseNo + '\'' +
+                ", city='" + city + '\'' +
+                ", street='" + street + '\'' +
+                ", country='" + country + '\'' +
+                ", state='" + state + '\'' +
+                ", profilePic='" + profilePic + '\'' +
+                ", noOfPhotosUploaded=" + noOfPhotosUploaded +
+                ", pincode='" + pincode + '\'' +
+                ", user=" + user +
+                '}';
+    }
 }

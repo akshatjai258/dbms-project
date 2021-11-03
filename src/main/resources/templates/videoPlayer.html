@@ -12,6 +12,8 @@
     <title>Reactive Spring Video streaming</title>
 </head>
 <body>
+
+
 <div class="container mt-5">
     <h2>Video streaming</h2>
     <video th:src="@{/video/}"   width="720px" height="480px" controls preload="none">
@@ -23,6 +25,8 @@
         integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
         crossorigin="anonymous"></script>
 
-
+<script th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/1.12.9-1/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
 </body>
 </html>

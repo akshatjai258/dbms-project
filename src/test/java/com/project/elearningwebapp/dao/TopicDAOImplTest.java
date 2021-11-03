@@ -1,7 +1,8 @@
 package com.project.elearningwebapp.dao;
 
-import com.project.elearningwebapp.UserDaoTest;
+import com.project.elearningwebapp.models.Course;
 import com.project.elearningwebapp.models.Teacher;
+import com.project.elearningwebapp.models.Topic;
 import com.project.elearningwebapp.models.User;
 import com.project.elearningwebapp.utils.PreparedStatementUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,16 +17,17 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Rollback(false)
-class TeaceherDAOImplTest {
+class TopicDAOImplTest {
 
     @Autowired
-    private TeacherDAO dao;
+    private TopicDAO dao;
 
     @Autowired
-    private userDAO udao;
+    private CourseDAO cdao;
+
+
 
     @BeforeEach
     void setUp() {
@@ -34,54 +36,50 @@ class TeaceherDAOImplTest {
         dataSource.setUsername("root");
         dataSource.setPassword("Akshat@123");
 
-        dao = new TeaceherDAOImpl(new JdbcTemplate(dataSource));
-        udao = new userDAOImpl(new JdbcTemplate(dataSource));
+        dao = new TopicDAOImpl(new JdbcTemplate(dataSource), new PreparedStatementUtil());
+        cdao = new CourseDAOImpl(new JdbcTemplate(dataSource));
+
     }
 
     @Test
-    void save() {
-        Teacher t = new Teacher();
-        User u = udao.get(62);
-        t.setUser(u);
-        t.setGender("Male");
+    void testSave() {
+        Topic t = new Topic();
+        Course course = cdao.get(4);
+        t.setCourse(course);
+        t.setTopicTitle("Introduction");
+        t.setTopicNumber(1);
+        t.setTopicLecture("Introduction.mp4");
+        t.setTopicNotes("Introduction.pdf");
         dao.save(t);
 
     }
 
     @Test
-    void update() {
-        Teacher t=dao.get(2);
-        t.setGender("female");
+    void testUpdate() {
+        Topic t = dao.get(1);
+        t.setTopicLecture("introduction_revised.mp4");
         dao.update(t);
     }
 
     @Test
-    void delete() {
-        Teacher t = dao.get(2);
-        dao.delete(t.getTeacherId());
+    void testDelete() {
+        dao.delete(1);
     }
 
     @Test
-    void getAll() {
-        List<Teacher> lst = dao.getAll();
-        System.out.println(lst);
-
+    void testFindByCourseID() {
+        List<Topic>topics = dao.findByCourseID(4);
+        System.out.println(topics);
     }
 
     @Test
-    void get() {
-        Teacher teacher = dao.get(3);
-        System.out.println(teacher);
+    void testGet() {
+        Topic topic = dao.get(2);
+        System.out.println(topic);
     }
 
     @Test
-    void getByUserId() {
-        Teacher teacher = dao.getByUserId(62);
-    }
-
-    @Test
-    void getTeacherIdByUserId() {
-        int  x= dao.getTeacherIdByUserId(62);
-        System.out.println(x);
+    void countLectures() {
+        System.out.println(dao.countLectures(4));
     }
 }
