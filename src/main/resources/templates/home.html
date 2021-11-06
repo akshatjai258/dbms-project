@@ -59,12 +59,13 @@
                 <div class="col-12 text-center">
                     <h1 class="fw-light">Start Learning Today</h1>
                     <p>Kickstart your learning journey with our awesome courses</p>
-
-                    <div class="input-group searchbar">
-                        <input type="search" class="form-control rounded" placeholder="Search Your Courses" aria-label="Search"
-                           aria-describedby="search-addon" />
-                        <button type="button" class="btn btn-success">search</button>
-                    </div>
+                    <form th:action ="@{/courses/explore/0}" method="get">
+                        <div class="input-group searchbar">
+                            <input type="search" class="form-control rounded" name="course_" placeholder="Search Your Courses" aria-label="Search"
+                               aria-describedby="search-addon" />
+                            <button type="submit" class="btn btn-success">search</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

@@ -80,6 +80,11 @@ class TopicDAOImplTest {
 
     @Test
     void countLectures() {
-        System.out.println(dao.countLectures(4));
+        System.out.println(dao.getCount(4));
+    }
+
+    @Test
+    void getCount(){
+
     }
 }

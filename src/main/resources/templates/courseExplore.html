@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <link rel="stylesheet" type = "text/css" th:href="@{/css/home.css}">
 
+
+
 </head>
 </body>
 
@@ -20,7 +22,7 @@
 
     <div style="width: 25%; margin-right: 30px;">
 
-        <form class="mt-5" th:action ="@{/courses/explore/0}" method="get">
+        <form class="mt-5" th:action ="@{/course/explore/0}" method="get">
             <div class="form-group">
                 <label for="exampleFormControlInput1">Search Course</label>
                 <input type="text" class="form-control" id="exampleFormControlInput1" name="course_" placeholder="Search Your Course">
@@ -45,6 +47,23 @@
 
                 </select>
             </div>
+
+
+            <div class="form-group">
+                <label for="exampleFormControlSelect3">Sort By</label>
+
+
+                <select class="form-control" id="exampleFormControlSelect3" name="sorted_by">
+
+                    <option>Default</option>
+                    <option>Rating</option>
+                    <option>Recent First</option>
+                    <option>Cheapest First</option>
+
+                </select>
+            </div>
+
+
             <div class="text-center">
                 <button class="btn btn-primary" type="submit">
                     Submit
@@ -105,19 +124,21 @@
                 </th:block>
             </div>
 
-        <nav aria-label="Page navigation example" >
-            <ul class="pagination pagination-circle pg-blue">
-                <li class="page-item" th:classappend="${currentPage == 0?'disabled':''}">
-                    <a class="page-link" th:href="@{'/courses/explore/' + ${currentPage-1}}"><span >Previous</span></a>
-                </li>
+        <div class="text-center">
+            <nav aria-label="Page navigation example" >
+                <ul class="pagination pagination-circle pg-blue">
+                    <li class="page-item" th:classappend="${currentPage == 0?'disabled':''}">
+                        <a class="page-link" th:href="@{'/course/explore/' + ${currentPage-1}}"><span >Previous</span></a>
+                    </li>
 
-                <li  th:each="i:${#numbers.sequence(1, totalPages)}" class="page-item" th:classappend="${currentPage == (i-1)?'active':''}"><a class="page-link" th:href="@{'/courses/explore/' + ${i-1 + queryString} }"><span th:text="${i}"></span></a></li>
+                    <li  th:each="i:${#numbers.sequence(1, totalPages)}" class="page-item" th:classappend="${currentPage == (i-1)?'active':''}"><a class="page-link" th:href="@{'/course/explore/' + ${i-1 + queryString} }"><span th:text="${i}"></span></a></li>
 
-                <li class="page-item" th:classappend="${currentPage+1 == totalPages?'disabled':''}">
-                    <a class="page-link" th:href="@{'/courses/explore/' + ${currentPage+1}}">Next</a>
-                </li>
-            </ul>
-        </nav>
+                    <li class="page-item" th:classappend="${currentPage+1 == totalPages?'disabled':''}">
+                        <a class="page-link" th:href="@{'/course/explore/' + ${currentPage+1}}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
 
         <!--pagination-->
@@ -134,5 +155,6 @@
 <script th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
 <script th:src="@{/webjars/popper.js/1.12.9-1/umd/popper.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+
 </body>
 </html>

@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 
+@Repository
 public class TopicDAOImpl implements  TopicDAO {
 
     @Autowired
@@ -94,8 +95,11 @@ public class TopicDAOImpl implements  TopicDAO {
         }
     }
 
+
+
+
     @Override
-    public int countLectures(int courseId) {
+    public int getCount(int courseId) {
         String sql = "SELECT COUNT(*) FROM topics WHERE course_id = ?";
         int x = jdbcTemplate.queryForObject(sql, new Object[]{courseId}, Integer.class);
         return x;

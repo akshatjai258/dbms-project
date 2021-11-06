@@ -21,6 +21,7 @@ public interface TopicDAO {
     // get single topic
     public Topic get(int topicId);
 
-    public int countLectures(int courseId);
+
+    public int getCount(int courseId);
 
 }

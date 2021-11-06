@@ -8,17 +8,45 @@ public class Course {
     private Teacher teacher;
     private String courseName;
     private String courseDescription;
-    private int coursePrice;
+    private double coursePrice;
     private int avgRating;
     private Timestamp timestamp;
     private Category category;
     private String courseThumbnail;
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "courseId=" + courseId +
+                ", teacher=" + teacher +
+                ", courseName='" + courseName + '\'' +
+                ", courseDescription='" + courseDescription + '\'' +
+                ", coursePrice=" + coursePrice +
+                ", avgRating=" + avgRating +
+                ", timestamp=" + timestamp +
+                ", category=" + category +
+                ", courseThumbnail='" + courseThumbnail + '\'' +
+                ", courseDifficulty='" + courseDifficulty + '\'' +
+                ", courseOverview='" + courseOverview + '\'' +
+                '}';
+    }
+
     private String courseDifficulty;
+
+    public String getCourseOverview() {
+        return courseOverview;
+    }
+
+    public void setCourseOverview(String courseOverview) {
+        this.courseOverview = courseOverview;
+    }
+
+    private String courseOverview;
 
     public Course() {
     }
 
-    public Course(int course_id, Teacher teacher, String courseName, String courseDescription, int coursePrice, int avgRating, Timestamp timestamp, Category category, String courseThumbnail, String courseDifficulty) {
+    public Course(int course_id, Teacher teacher, String courseName, String courseDescription, int coursePrice, int avgRating, Timestamp timestamp, Category category, String courseThumbnail, String courseDifficulty, String courseOverview) {
         this.courseId = course_id;
         this.teacher = teacher;
         this.courseName = courseName;
@@ -29,6 +57,7 @@ public class Course {
         this.category = category;
         this.courseThumbnail = courseThumbnail;
         this.courseDifficulty = courseDifficulty;
+        this.courseOverview = courseOverview;
     }
 
     public int getCourseId() {
@@ -63,11 +92,11 @@ public class Course {
         this.courseDescription = courseDescription;
     }
 
-    public int getCoursePrice() {
+    public double getCoursePrice() {
         return coursePrice;
     }
 
-    public void setCoursePrice(int coursePrice) {
+    public void setCoursePrice(double coursePrice) {
         this.coursePrice = coursePrice;
     }
 
@@ -111,19 +140,4 @@ public class Course {
         this.courseDifficulty = courseDifficulty;
     }
 
-    @Override
-    public String toString() {
-        return "Course{" +
-                "courseId=" + courseId +
-                ", teacher=" + teacher +
-                ", courseName='" + courseName + '\'' +
-                ", courseDescription='" + courseDescription + '\'' +
-                ", coursePrice=" + coursePrice +
-                ", avgRating=" + avgRating +
-                ", timestamp=" + timestamp +
-                ", category=" + category +
-                ", courseThumbnail='" + courseThumbnail + '\'' +
-                ", courseDifficulty='" + courseDifficulty + '\'' +
-                '}';
-    }
 }

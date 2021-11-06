@@ -45,7 +45,7 @@ public class CourseDAOImpl implements CourseDAO{
 
     @Override
     public Course save(Course course) {
-        String sql = "INSERT INTO courses (teacher_id, course_name, course_description, course_price, avg_rating, timestamp, category_id, course_thumbnail, course_difficulty) VALUES(?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO courses (teacher_id, course_name, course_description,course_overview, course_price, avg_rating, timestamp, category_id, course_thumbnail, course_difficulty) VALUES(?,?,?,?,?,?,?,?,?,?)";
 //        jdbcTemplate.update(sql, course.getTeacher().getTeacherId(), course.getCourseName(), course.getCourseDescription(),
 //                course.getCoursePrice(), course.getAvgRating(), course.getTimestamp(), course.getCategory().getCategoryId(), course.getCourseThumbnail(), course.getCourseDifficulty());
 
@@ -54,7 +54,7 @@ public class CourseDAOImpl implements CourseDAO{
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                 PreparedStatement preparedStatement = con.prepareStatement(sql, new String[] {"course_id"});
-                preparedStatementUtil.setParameters(preparedStatement, course.getTeacher().getTeacherId(), course.getCourseName(), course.getCourseDescription(),
+                preparedStatementUtil.setParameters(preparedStatement, course.getTeacher().getTeacherId(), course.getCourseName(), course.getCourseDescription(),course.getCourseOverview(),
                         course.getCoursePrice(), course.getAvgRating(), course.getTimestamp(), course.getCategory().getCategoryId(), course.getCourseThumbnail(), course.getCourseDifficulty());
                 return preparedStatement;
             }
@@ -62,14 +62,13 @@ public class CourseDAOImpl implements CourseDAO{
         int courseId = keyHolder.getKey().intValue();
         course.setCourseId(courseId);
 
-        System.out.println("hello " + course.getTeacher());
         return course;
     }
 
     @Override
     public void update(Course course) {
-        String sql = "UPDATE courses SET course_name = ?, course_description = ?, course_thumbnail = ?, course_price=?, course_difficulty=? WHERE course_id =?";
-        jdbcTemplate.update(sql, course.getCourseName(), course.getCourseDescription(), course.getCourseThumbnail(), course.getCoursePrice(), course.getCourseDifficulty(), course.getCourseId());
+        String sql = "UPDATE courses SET course_name = ?, course_description = ?, course_overview=?, course_thumbnail = ?, course_price=?, course_difficulty=? WHERE course_id =?";
+        jdbcTemplate.update(sql, course.getCourseName(), course.getCourseDescription(), course.getCourseOverview(), course.getCourseThumbnail(), course.getCoursePrice(), course.getCourseDifficulty(), course.getCourseId());
 
 
 
