@@ -24,7 +24,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Repository
-public class CourseDAOImpl implements CourseDAO{
+public class CourseDAOImpl implements CourseDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -45,17 +45,17 @@ public class CourseDAOImpl implements CourseDAO{
 
     @Override
     public Course save(Course course) {
-        String sql = "INSERT INTO courses (teacher_id, course_name, course_description,course_overview, course_price, avg_rating, timestamp, category_id, course_thumbnail, course_difficulty) VALUES(?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO courses (teacher_id, course_name, course_description,course_overview, course_price, avg_rating, timestamp, category_id, course_thumbnail, course_difficulty, no_of_weeks) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
 //        jdbcTemplate.update(sql, course.getTeacher().getTeacherId(), course.getCourseName(), course.getCourseDescription(),
 //                course.getCoursePrice(), course.getAvgRating(), course.getTimestamp(), course.getCategory().getCategoryId(), course.getCourseThumbnail(), course.getCourseDifficulty());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(new PreparedStatementCreator(){
+        jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                PreparedStatement preparedStatement = con.prepareStatement(sql, new String[] {"course_id"});
-                preparedStatementUtil.setParameters(preparedStatement, course.getTeacher().getTeacherId(), course.getCourseName(), course.getCourseDescription(),course.getCourseOverview(),
-                        course.getCoursePrice(), course.getAvgRating(), course.getTimestamp(), course.getCategory().getCategoryId(), course.getCourseThumbnail(), course.getCourseDifficulty());
+                PreparedStatement preparedStatement = con.prepareStatement(sql, new String[]{"course_id"});
+                preparedStatementUtil.setParameters(preparedStatement, course.getTeacher().getTeacherId(), course.getCourseName(), course.getCourseDescription(), course.getCourseOverview(),
+                        course.getCoursePrice(), course.getAvgRating(), course.getTimestamp(), course.getCategory().getCategoryId(), course.getCourseThumbnail(), course.getCourseDifficulty(), course.getNoOfWeeks());
                 return preparedStatement;
             }
         }, keyHolder);
@@ -67,9 +67,8 @@ public class CourseDAOImpl implements CourseDAO{
 
     @Override
     public void update(Course course) {
-        String sql = "UPDATE courses SET course_name = ?, course_description = ?, course_overview=?, course_thumbnail = ?, course_price=?, course_difficulty=? WHERE course_id =?";
-        jdbcTemplate.update(sql, course.getCourseName(), course.getCourseDescription(), course.getCourseOverview(), course.getCourseThumbnail(), course.getCoursePrice(), course.getCourseDifficulty(), course.getCourseId());
-
+        String sql = "UPDATE courses SET course_name = ?, course_description = ?, course_overview=?, course_thumbnail = ?, course_price=?, course_difficulty=?, no_of_weeks=?, category_id=? WHERE course_id =?";
+        jdbcTemplate.update(sql, course.getCourseName(), course.getCourseDescription(), course.getCourseOverview(), course.getCourseThumbnail(), course.getCoursePrice(), course.getCourseDifficulty(), course.getNoOfWeeks(), course.getCategory().getCategoryId(), course.getCourseId());
 
 
     }
@@ -84,8 +83,8 @@ public class CourseDAOImpl implements CourseDAO{
     public Course get(int courseId) {
         try {
             String sql = "SELECT * FROM courses NATURAL JOIN teachers NATURAL JOIN categories NATURAL JOIN users WHERE course_id = ?";
-            return (Course) jdbcTemplate.queryForObject(sql, new Object[] {
-                            courseId },
+            return (Course) jdbcTemplate.queryForObject(sql, new Object[]{
+                            courseId},
                     new CourseRowMapper());
         } catch (EmptyResultDataAccessException e) {
             return null;
@@ -99,18 +98,18 @@ public class CourseDAOImpl implements CourseDAO{
     @Override
     public Page<Course> findAll(Pageable pageable) {
         Sort.Order order = !pageable.getSort().isEmpty() ? pageable.getSort().toList().get(0) : Sort.Order.by("course_id");
-        String sql = "SELECT * FROM courses NATURAL JOIN teachers NATURAL JOIN categories NATURAL JOIN users ORDER BY "+order.getProperty() + " "
+        String sql = "SELECT * FROM courses NATURAL JOIN teachers NATURAL JOIN categories NATURAL JOIN users ORDER BY " + order.getProperty() + " "
                 + order.getDirection().name()
-                + " LIMIT "+ pageable.getPageSize() +" OFFSET "+ pageable.getOffset();
+                + " LIMIT " + pageable.getPageSize() + " OFFSET " + pageable.getOffset();
 
-        List<Course> courses =jdbcTemplate.query(sql, new CourseRowMapper());
+        List<Course> courses = jdbcTemplate.query(sql, new CourseRowMapper());
         return new PageImpl<Course>(courses, pageable, count());
     }
 
     @Override
     public List<Course> sortByRating() {
         String sql = "SELECT * FROM courses NATURAL JOIN teachers NATURAL JOIN categories NATURAL JOIN users ORDER BY avg_rating DESC";
-        List<Course> courses =jdbcTemplate.query(sql, new CourseRowMapper());
+        List<Course> courses = jdbcTemplate.query(sql, new CourseRowMapper());
         return courses;
     }
 
@@ -122,21 +121,21 @@ public class CourseDAOImpl implements CourseDAO{
     @Override
     public List<Course> sortByDate() {
         String sql = "SELECT * FROM courses NATURAL JOIN teachers NATURAL JOIN categories NATURAL JOIN users ORDER BY timestamp DESC";
-        List<Course> courses =jdbcTemplate.query(sql, new CourseRowMapper());
+        List<Course> courses = jdbcTemplate.query(sql, new CourseRowMapper());
         return courses;
     }
 
     @Override
     public List<Course> getAllByTeacherId(int teacherId) {
         String sql = "SELECT * FROM courses NATURAL JOIN teachers NATURAL JOIN categories NATURAL JOIN users where teacher_id = ?";
-        List<Course> courses =jdbcTemplate.query(sql, new Object[]{teacherId}, new CourseRowMapper());
+        List<Course> courses = jdbcTemplate.query(sql, new Object[]{teacherId}, new CourseRowMapper());
         return courses;
     }
 
     @Override
     public List<Course> getAllByCategoryId(int categoryId) {
         String sql = "SELECT * FROM courses NATURAL JOIN teachers NATURAL JOIN categories NATURAL JOIN users where category_id = ?";
-        List<Course> courses =jdbcTemplate.query(sql, new Object[]{categoryId}, new CourseRowMapper());
+        List<Course> courses = jdbcTemplate.query(sql, new Object[]{categoryId}, new CourseRowMapper());
         return courses;
     }
 
@@ -160,39 +159,69 @@ public class CourseDAOImpl implements CourseDAO{
 
         Sort.Order order = !pageable.getSort().isEmpty() ? pageable.getSort().toList().get(0) : Sort.Order.by("course_id");
         String sql = "SELECT * FROM courses NATURAL JOIN teachers NATURAL JOIN categories NATURAL JOIN users ";
-        if(!course_text.equals("")){
+        if (!course_text.equals("")) {
 
             sql += "WHERE Match (course_name, course_description) AGAINST(" + "'" + course_text + "') AND";
         }
 
-        if(!category_text.equals("Any")){
-            if(!sql.substring(sql.length() - 3).equals("AND")){
+        if (!category_text.equals("Any")) {
+            if (!sql.substring(sql.length() - 3).equals("AND")) {
                 sql += " WHERE ";
             }
 
-            sql += " categories.category_name = "+"'"+category_text + "' AND";
+            sql += " categories.category_name = " + "'" + category_text + "' AND";
         }
 
-        if(!difficulty_text.equals("Any")){
-            if(!sql.substring(sql.length() - 3).equals("AND")){
+        if (!difficulty_text.equals("Any")) {
+            if (!sql.substring(sql.length() - 3).equals("AND")) {
                 sql += " WHERE ";
             }
 
-            sql += " course_difficulty = "+"'"+difficulty_text + "'";
+            sql += " course_difficulty = " + "'" + difficulty_text + "'";
         }
 
-        if(sql.substring(sql.length() - 3).equals("AND")){
+        if (sql.substring(sql.length() - 3).equals("AND")) {
             sql = sql.substring(0, sql.length() - 3);
         }
-        sql += " ORDER BY "+ order.getProperty() + " "
+        sql += " ORDER BY " + order.getProperty() + " "
                 + order.getDirection().name()
-                + " LIMIT "+ pageable.getPageSize() +" OFFSET "+ pageable.getOffset();
+                + " LIMIT " + pageable.getPageSize() + " OFFSET " + pageable.getOffset();
 
 
-
-        List<Course> courses =jdbcTemplate.query(sql, new CourseRowMapper());
+        List<Course> courses = jdbcTemplate.query(sql, new CourseRowMapper());
         return new PageImpl<Course>(courses, pageable, count());
     }
 
+    @Override
+    public Integer advanceCount(String course_text, String category_text, String difficulty_text) {
+        String sql = "SELECT count(*) FROM courses NATURAL JOIN teachers NATURAL JOIN categories NATURAL JOIN users ";
+        if (!course_text.equals("")) {
+
+            sql += "WHERE Match (course_name, course_description) AGAINST(" + "'" + course_text + "') AND";
+        }
+
+        if (!category_text.equals("Any")) {
+            if (!sql.substring(sql.length() - 3).equals("AND")) {
+                sql += " WHERE ";
+            }
+
+            sql += " categories.category_name = " + "'" + category_text + "' AND";
+        }
+
+        if (!difficulty_text.equals("Any")) {
+            if (!sql.substring(sql.length() - 3).equals("AND")) {
+                sql += " WHERE ";
+            }
+
+            sql += " course_difficulty = " + "'" + difficulty_text + "'";
+        }
+
+        if (sql.substring(sql.length() - 3).equals("AND")) {
+            sql = sql.substring(0, sql.length() - 3);
+        }
+
+        return jdbcTemplate.queryForObject(sql, Integer.class);
+
+    }
 
 }

@@ -9,6 +9,31 @@ public class Topic {
     private int topicNumber;
     private Course course;
 
+    public Topic(int topicId, String topicTitle, String topicLecture, String topicNotes, int topicNumber, Course course, int week) {
+        this.topicId = topicId;
+        this.topicTitle = topicTitle;
+        this.topicLecture = topicLecture;
+        this.topicNotes = topicNotes;
+        this.topicNumber = topicNumber;
+        this.course = course;
+        this.week = week;
+    }
+
+    private int week;
+
+    @Override
+    public String toString() {
+        return "Topic{" +
+                "topicId=" + topicId +
+                ", topicTitle='" + topicTitle + '\'' +
+                ", topicLecture='" + topicLecture + '\'' +
+                ", topicNotes='" + topicNotes + '\'' +
+                ", topicNumber=" + topicNumber +
+                ", course=" + course +
+                ", week=" + week +
+                '}';
+    }
+
     public Topic() {
     }
 
@@ -60,15 +85,11 @@ public class Topic {
         this.course = course;
     }
 
-    @Override
-    public String toString() {
-        return "Topic{" +
-                "topicId=" + topicId +
-                ", topicTitle='" + topicTitle + '\'' +
-                ", topicLecture='" + topicLecture + '\'' +
-                ", topicNotes='" + topicNotes + '\'' +
-                ", topicNumber='" + topicNumber + '\'' +
-                ", course=" + course +
-                '}';
+    public int getWeek() {
+        return week;
+    }
+
+    public void setWeek(int week) {
+        this.week = week;
     }
 }

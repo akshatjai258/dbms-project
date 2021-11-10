@@ -9,7 +9,7 @@ public class Course {
     private String courseName;
     private String courseDescription;
     private double coursePrice;
-    private int avgRating;
+    private double avgRating;
     private Timestamp timestamp;
     private Category category;
     private String courseThumbnail;
@@ -26,10 +26,13 @@ public class Course {
                 ", timestamp=" + timestamp +
                 ", category=" + category +
                 ", courseThumbnail='" + courseThumbnail + '\'' +
+                ", noOfWeeks=" + noOfWeeks +
                 ", courseDifficulty='" + courseDifficulty + '\'' +
                 ", courseOverview='" + courseOverview + '\'' +
                 '}';
     }
+
+    private int noOfWeeks;
 
     private String courseDifficulty;
 
@@ -46,7 +49,7 @@ public class Course {
     public Course() {
     }
 
-    public Course(int course_id, Teacher teacher, String courseName, String courseDescription, int coursePrice, int avgRating, Timestamp timestamp, Category category, String courseThumbnail, String courseDifficulty, String courseOverview) {
+    public Course(int course_id, Teacher teacher, String courseName, String courseDescription, int coursePrice, double avgRating, Timestamp timestamp, Category category, String courseThumbnail, int noOfWeeks, String courseDifficulty, String courseOverview) {
         this.courseId = course_id;
         this.teacher = teacher;
         this.courseName = courseName;
@@ -56,6 +59,7 @@ public class Course {
         this.timestamp = timestamp;
         this.category = category;
         this.courseThumbnail = courseThumbnail;
+        this.noOfWeeks = noOfWeeks;
         this.courseDifficulty = courseDifficulty;
         this.courseOverview = courseOverview;
     }
@@ -100,11 +104,11 @@ public class Course {
         this.coursePrice = coursePrice;
     }
 
-    public int getAvgRating() {
+    public double getAvgRating() {
         return avgRating;
     }
 
-    public void setAvgRating(int avgRating) {
+    public void setAvgRating(double avgRating) {
         this.avgRating = avgRating;
     }
 
@@ -140,4 +144,15 @@ public class Course {
         this.courseDifficulty = courseDifficulty;
     }
 
+    public int getNoOfWeeks() {
+        return noOfWeeks;
+    }
+
+    public void setNoOfWeeks(int noOfWeeks) {
+        this.noOfWeeks = noOfWeeks;
+    }
+
+    public String getThumbnailPath(){
+        return "/images/course-thumbnails/" + this.getCourseId() +"/"+ this.getCourseThumbnail();
+    }
 }

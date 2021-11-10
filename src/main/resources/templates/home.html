@@ -59,7 +59,7 @@
                 <div class="col-12 text-center">
                     <h1 class="fw-light">Start Learning Today</h1>
                     <p>Kickstart your learning journey with our awesome courses</p>
-                    <form th:action ="@{/courses/explore/0}" method="get">
+                    <form th:action ="@{/course/explore/0}" method="get">
                         <div class="input-group searchbar">
                             <input type="search" class="form-control rounded" name="course_" placeholder="Search Your Courses" aria-label="Search"
                                aria-describedby="search-addon" />
@@ -81,25 +81,25 @@
             labore Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
 
         <div class="row">
-        <th:block th:each="course : ${courses}">
+        <th:block th:each="course,iStat : ${courses}">
 
             <div class="col-md-4 mt-3">
                 <div class="card" style="box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;">
-                    <img class="card-img-top" src="//placeimg.com/280/180/tech" alt="Card image cap">
+                    <img class="card-img-top" th:src="${course.getThumbnailPath()}" alt="Card image cap">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <p class="design" th:text="${course.getCategory().getCategoryName()}"></p>
-                            <p class="enrolled">8,350 Enrolled</p>
+                            <p class="enrolled" th:text="${enrolmentcount.get(iStat.index)[0] + ' Enrolled'} "></p>
                         </div>
 
-                        <p style="font-weight: 700;" th:text="${course.getCourseName()}"></p>
+                        <a class="subjectLink" href=""><p style="font-weight: 700;" th:text="${course.getCourseName()}"></p></a>
                         <div class="d-flex justify-content-between align-items-center paragraph-parent">
 
 
-                            <p  class="length"><i class="fa fa-clock text-danger mr-1"></i>10 hr 20 min</p>
-                            <p class="noOfLectures"><i class="fa fa-video text-success mr-1"></i>67 lectures</p>
+                            <p  class="length"><i class="fa fa-clock text-danger mr-1"></i> <span th:text="${course.getNoOfWeeks() + ' weeks'}"></span></p>
+                            <p class="noOfLectures"><i class="fa fa-video text-success mr-1"></i> <span th:text="${enrolmentcount.get(iStat.index)[1] +' lectures'}"></span></p>
 
-                            <p class="expertise"><i class="fa fa-signal text-warning mr-1"></i>Beginner</p>
+                            <p class="expertise"><i class="fa fa-signal text-warning mr-1"></i><span th:text="${course.getCourseDifficulty()}"></span></p>
                         </div>
 
                         <div class="d-flex justify-content-between align-items-center border-top py-2">
@@ -120,7 +120,7 @@
         </th:block>
         </div>
 
-
+    </div>
 </section>
 
 

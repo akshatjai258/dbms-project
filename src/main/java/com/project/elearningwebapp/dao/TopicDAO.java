@@ -22,6 +22,7 @@ public interface TopicDAO {
     public Topic get(int topicId);
 
 
-    public int getCount(int courseId);
+    public int getCount(int courseId, int weekNo);
+    public int getNoOflectures(int courseId);
 
 }

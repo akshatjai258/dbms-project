@@ -45,13 +45,13 @@ public class TopicDAOImpl implements  TopicDAO {
 
     @Override
     public Topic save(Topic topic) {
-        String sql = "INSERT INTO topics(topic_title, topic_lecture, topic_notes, topic_number, course_id) VALUES(?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO topics(topic_title, topic_lecture, topic_notes, topic_number, week,  course_id) VALUES(?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                 PreparedStatement preparedStatement = con.prepareStatement(sql, new String[] {"topic_id"});
-                preparedStatementUtil.setParameters(preparedStatement, topic.getTopicTitle(), topic.getTopicLecture(), topic.getTopicNotes(), topic.getTopicNumber(), topic.getCourse().getCourseId());
+                preparedStatementUtil.setParameters(preparedStatement, topic.getTopicTitle(), topic.getTopicLecture(), topic.getTopicNotes(), topic.getTopicNumber(), topic.getWeek(), topic.getCourse().getCourseId());
                 return preparedStatement;
 
             }
@@ -64,8 +64,8 @@ public class TopicDAOImpl implements  TopicDAO {
 
     @Override
     public void update(Topic topic) {
-        String sql = "UPDATE topics SET topic_title=?, topic_lecture=?, topic_notes=? WHERE topic_id = ?";
-        jdbcTemplate.update(sql, topic.getTopicTitle(), topic.getTopicLecture(), topic.getTopicNotes(), topic.getTopicId());
+        String sql = "UPDATE topics SET topic_title=?, topic_lecture=?, topic_notes=?, week=? WHERE topic_id = ?";
+        jdbcTemplate.update(sql, topic.getTopicTitle(), topic.getTopicLecture(), topic.getTopicNotes(), topic.getWeek(), topic.getTopicId());
     }
 
     @Override
@@ -99,7 +99,14 @@ public class TopicDAOImpl implements  TopicDAO {
 
 
     @Override
-    public int getCount(int courseId) {
+    public int getCount(int courseId, int weekNo) {
+        String sql = "SELECT COUNT(*) FROM topics WHERE course_id = ? and week =?";
+        int x = jdbcTemplate.queryForObject(sql, new Object[]{courseId, weekNo}, Integer.class);
+        return x;
+    }
+
+    @Override
+    public int getNoOflectures(int courseId) {
         String sql = "SELECT COUNT(*) FROM topics WHERE course_id = ?";
         int x = jdbcTemplate.queryForObject(sql, new Object[]{courseId}, Integer.class);
         return x;

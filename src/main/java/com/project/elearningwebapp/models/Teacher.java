@@ -13,6 +13,27 @@ public class Teacher {
     private String pincode;
     private int noOfPhotosUploaded;
 
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "teacherId=" + teacherId +
+                ", gender='" + gender + '\'' +
+                ", houseNo='" + houseNo + '\'' +
+                ", city='" + city + '\'' +
+                ", street='" + street + '\'' +
+                ", country='" + country + '\'' +
+                ", state='" + state + '\'' +
+                ", profilePic='" + profilePic + '\'' +
+                ", aboutMe='" + aboutMe + '\'' +
+                ", pincode='" + pincode + '\'' +
+                ", noOfPhotosUploaded=" + noOfPhotosUploaded +
+                ", teachingExperience=" + teachingExperience +
+                ", user=" + user +
+                '}';
+    }
+
+    private int teachingExperience;
+
     public User getUser() {
         return user;
     }
@@ -21,7 +42,7 @@ public class Teacher {
         this.user = user;
     }
 
-    public Teacher(int teacherId, String gender, String houseNo, String city, String street, String country, String state, String profilePic, String aboutMe, String pincode, int NoOfPhotosUploaded, User user) {
+    public Teacher(int teacherId, String gender, String houseNo, String city, String street, String country, String state, String profilePic, String aboutMe, String pincode, int NoOfPhotosUploaded, int teachingExperience, User user) {
         this.teacherId = teacherId;
         this.gender = gender;
         this.houseNo = houseNo;
@@ -33,6 +54,7 @@ public class Teacher {
         this.aboutMe = aboutMe;
         this.pincode = pincode;
         this.noOfPhotosUploaded = NoOfPhotosUploaded;
+        this.teachingExperience = teachingExperience;
         this.user = user;
     }
 
@@ -116,24 +138,6 @@ public class Teacher {
         this.aboutMe = aboutMe;
     }
 
-    @Override
-    public String toString() {
-        return "Teacher{" +
-                "teacherId=" + teacherId +
-                ", gender='" + gender + '\'' +
-                ", houseNo='" + houseNo + '\'' +
-                ", city='" + city + '\'' +
-                ", street='" + street + '\'' +
-                ", country='" + country + '\'' +
-                ", state='" + state + '\'' +
-                ", profilePic='" + profilePic + '\'' +
-                ", aboutMe='" + aboutMe + '\'' +
-                ", pincode='" + pincode + '\'' +
-                ", noOfPhotosUploaded=" + noOfPhotosUploaded +
-                ", user=" + user +
-                '}';
-    }
-
     public String getProfilePath(){
         return "/images/profile/teacher/" + this.getProfilePic();
     }
@@ -152,5 +156,13 @@ public class Teacher {
 
     public void setNoOfPhotosUploaded(int NoOfPhotosUploaded) {
         this.noOfPhotosUploaded = NoOfPhotosUploaded;
+    }
+
+    public int getTeachingExperience() {
+        return teachingExperience;
+    }
+
+    public void setTeachingExperience(int teachingExperience) {
+        this.teachingExperience = teachingExperience;
     }
 }

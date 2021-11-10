@@ -29,12 +29,14 @@
                         <div class="col-md-6 mt-2"><label class="labels">Email Address</label><input type="text" class="form-control" name="emailId" placeholder="Email Address" th:value="${user.getEmailId()}"></div>
                         <div class="col-md-6 mt-2"><label class="labels">Gender</label><input type="text" class="form-control" name="gender" placeholder="Gender" th:value="${teacher.getGender()}"></div>
                         <div class="col-md-6 mt-2"><label class="labels">City</label><input type="text" class="form-control" name="city" th:value="${teacher.getCity()}" placeholder="city"></div>
+                        <div class="col-md-6 mt-2"><label class="labels">Teaching Experience(years)</label><input type="number" class="form-control" name="teachingExperience" th:value="${teacher.getTeachingExperience()}" placeholder="How many year's teaching experience do you have?"></div>
+
                         <div class="col-md-12 mt-2"><label class="labels">Street</label><input type="text" class="form-control" name="street" placeholder="Street" th:value="${teacher.getStreet()}"></div>
                         <div class="col-md-6 mt-2"><label class="labels">House No</label><input type="text" class="form-control" name="houseNo" th:value="${teacher.getHouseNo()}" placeholder="house number"></div>
                         <div class="col-md-6 mt-2"><label class="labels">Pincode</label><input type="text" class="form-control" name="pincode" th:value="${teacher.getPincode()}" placeholder="pincode" ></div>
                         <div class="col-md-6 mt-2"><label class="labels">Country</label><input type="text" class="form-control" name="country" placeholder="country"  th:value="${teacher.getCountry()}" ></div>
                         <div class="col-md-6 mt-2"><label class="labels">State/Region</label><input type="text" class="form-control" name="state" value="" placeholder="state"  th:value="${teacher.getState()}"></div>
-                        <div class="col-md-6 mt-2"><label class="labels">Profile Picture</label><input type="file" class = "form-control" id ="fileImage" name="fileImage" /></div>
+                        <div class="col-md-12 mt-2"><label class="labels">Profile Picture</label><input type="file" class = "form-control" id ="fileImage" name="fileImage" /></div>
                         <div class="col-md-12 mt-2"><label class="labels">About me</label><input type="text" class="form-control" name="aboutMe" placeholder="Tell us something about you" th:value="${teacher.getAboutMe()}"></div>
 
                     </div>

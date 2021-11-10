@@ -22,5 +22,6 @@ public interface CourseDAO {
     public List<Course>searchedCourses(String text);
     public List<Course>getAllByDifficulty(String difficulty);
     public Page<Course>advanceFilter(String course_text, String category_text, String difficulty_text, Pageable page);
+    public Integer advanceCount(String course_text, String category_text, String difficulty_text);
     public int count();
 }

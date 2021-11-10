@@ -14,7 +14,7 @@ body::-webkit-scrollbar-thumb{
 .masthead {
     height: 100vh;
     min-height: 500px;
-    background-image: url('https://source.unsplash.com/pUAM5hPaCRI/1920x1080');
+    background-image: url('../images/assets/banner.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -60,9 +60,6 @@ body::-webkit-scrollbar-thumb{
     border: 0px;
     border-radius: 25px;
 }
-.enrolled{
-    font-weight: bold;
-}
 
 .avatar {
     vertical-align: middle;
@@ -74,4 +71,15 @@ body::-webkit-scrollbar-thumb{
 
 .paragraph-parent p{
     font-size: 0.8rem;
+}
+
+.subjectLink{
+    color: black;
+
+}
+
+.subjectLink:hover{
+    text-decoration: none;
+    color:#03B97C;
+    border:none;
 }

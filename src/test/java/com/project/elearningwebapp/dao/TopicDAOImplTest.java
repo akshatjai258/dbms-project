@@ -1,9 +1,7 @@
 package com.project.elearningwebapp.dao;
 
 import com.project.elearningwebapp.models.Course;
-import com.project.elearningwebapp.models.Teacher;
 import com.project.elearningwebapp.models.Topic;
-import com.project.elearningwebapp.models.User;
 import com.project.elearningwebapp.utils.PreparedStatementUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,9 +11,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.test.annotation.Rollback;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Rollback(false)
@@ -80,11 +79,38 @@ class TopicDAOImplTest {
 
     @Test
     void countLectures() {
-        System.out.println(dao.getCount(4));
+        System.out.println(dao.getCount(4, 1));
     }
 
     @Test
     void getCount(){
+        // get the list of topics belonging to a certain course
 
+        List<Topic>topics = dao.findByCourseID(1);
+        ArrayList<ArrayList<Topic>> ans = new ArrayList<ArrayList<Topic>>(10);
+        for(int i=1;i<=10;i++){
+            ans.add(new ArrayList<>());
+        }
+        for (Topic t:topics) {
+            ArrayList<Topic>current = ans.get(t.getWeek());
+            current.add(t);
+            ans.set(t.getWeek(), current);
+        }
+
+
+        for(int i=1;i<=10;i++){
+            System.out.println(ans.get(i-1));
+        }
+        for(int i=1;i<=10;i++){
+            Collections.sort(ans.get(i-1),new Comparator<Topic>() {
+                @Override
+                public int compare(Topic s1, Topic s2) {
+                    return Integer.compare(s1.getTopicNumber(), s2.getTopicNumber());
+                }
+            });
+        }
+        for(int i=1;i<=10;i++){
+            System.out.println(ans.get(i-1));
+        }
     }
 }

@@ -35,7 +35,7 @@ public class TeaceherDAOImpl implements TeacherDAO{
 
     @Override
     public Teacher save(Teacher teacher) {
-        String sql = "INSERT INTO teachers (gender, country, state, city, street, pincode, house_no, user_id, profile_pic, about_me) VALUES(?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO teachers (gender, country, state, city, street, pincode, house_no, user_id, profile_pic, about_me, teaching_experience) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator(){
             @Override
@@ -43,7 +43,7 @@ public class TeaceherDAOImpl implements TeacherDAO{
                 PreparedStatement preparedStatement = con.prepareStatement(sql, new String[] {"teacher_id"});
                 preparedStatementUtil.setParameters(preparedStatement, teacher.getGender(),
                         teacher.getCountry(), teacher.getState(), teacher.getCity(), teacher.getStreet(), teacher.getPincode(),
-                        teacher.getHouseNo(), teacher.getUser().getUser_id(), teacher.getProfilePic(), teacher.getAboutMe());
+                        teacher.getHouseNo(), teacher.getUser().getUser_id(), teacher.getProfilePic(), teacher.getAboutMe(), teacher.getTeachingExperience());
                 return preparedStatement;
             }
         }, keyHolder);
@@ -55,11 +55,11 @@ public class TeaceherDAOImpl implements TeacherDAO{
     @Override
     public void update(Teacher teacher) {
         String sql = "UPDATE teachers SET gender = ?, house_no = ?,country = ?, street = ?, city = ?, state = ?, "
-                + "pincode = ?, profile_pic = ?, no_of_photos_uploaded =?, about_me=? WHERE teacher_id = ?";
+                + "pincode = ?, profile_pic = ?, no_of_photos_uploaded =?, about_me=?, teaching_experience=? WHERE teacher_id = ?";
 
         jdbcTemplate.update(sql, teacher.getGender(), teacher.getHouseNo(),teacher.getCountry(),
                 teacher.getStreet(), teacher.getCity(), teacher.getState(),
-                teacher.getPincode(), teacher.getProfilePic(), teacher.getNoOfPhotosUploaded(),teacher.getAboutMe(), teacher.getTeacherId());
+                teacher.getPincode(), teacher.getProfilePic(), teacher.getNoOfPhotosUploaded(),teacher.getAboutMe(), teacher.getTeachingExperience(), teacher.getTeacherId());
     }
 
     @Override
