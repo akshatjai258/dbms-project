@@ -95,6 +95,17 @@ public class CourseDAOImpl implements CourseDAO {
         return jdbcTemplate.queryForObject("SELECT count(*) FROM courses", Integer.class);
     }
 
+    public int count_new(int teacherId) {
+        return jdbcTemplate.queryForObject("SELECT count(*) FROM courses where teacher_id=?", new Object[]{teacherId}, Integer.class);
+    }
+
+    @Override
+    public int numOfLectures(int teacherId) {
+
+        String sql = "SELECT count(*) from courses NATURAL JOIN topics where courses.teacher_id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{teacherId}, Integer.class);
+    }
+
     @Override
     public Page<Course> findAll(Pageable pageable) {
         Sort.Order order = !pageable.getSort().isEmpty() ? pageable.getSort().toList().get(0) : Sort.Order.by("course_id");
@@ -126,10 +137,15 @@ public class CourseDAOImpl implements CourseDAO {
     }
 
     @Override
-    public List<Course> getAllByTeacherId(int teacherId) {
+    public Page<Course> getAllByTeacherId(int teacherId, Pageable pageable) {
         String sql = "SELECT * FROM courses NATURAL JOIN teachers NATURAL JOIN categories NATURAL JOIN users where teacher_id = ?";
+        Sort.Order order = !pageable.getSort().isEmpty() ? pageable.getSort().toList().get(0) : Sort.Order.by("course_id");
+        sql += " ORDER BY " + order.getProperty() + " "
+                + order.getDirection().name()
+                + " LIMIT " + pageable.getPageSize() + " OFFSET " + pageable.getOffset();
+
         List<Course> courses = jdbcTemplate.query(sql, new Object[]{teacherId}, new CourseRowMapper());
-        return courses;
+        return new PageImpl<Course>(courses, pageable, count_new(teacherId));
     }
 
     @Override
@@ -154,7 +170,7 @@ public class CourseDAOImpl implements CourseDAO {
     }
 
     @Override
-    public Page<Course> advanceFilter(String course_text, String category_text, String difficulty_text, Pageable pageable) {
+    public Page<Course> advanceFilter(String course_text, Integer category_id, String difficulty_text, Pageable pageable) {
 
 
         Sort.Order order = !pageable.getSort().isEmpty() ? pageable.getSort().toList().get(0) : Sort.Order.by("course_id");
@@ -164,12 +180,12 @@ public class CourseDAOImpl implements CourseDAO {
             sql += "WHERE Match (course_name, course_description) AGAINST(" + "'" + course_text + "') AND";
         }
 
-        if (!category_text.equals("Any")) {
+        if (category_id != 0) {
             if (!sql.substring(sql.length() - 3).equals("AND")) {
                 sql += " WHERE ";
             }
 
-            sql += " categories.category_name = " + "'" + category_text + "' AND";
+            sql += " categories.category_id = " + "'" + category_id + "' AND";
         }
 
         if (!difficulty_text.equals("Any")) {
@@ -193,19 +209,19 @@ public class CourseDAOImpl implements CourseDAO {
     }
 
     @Override
-    public Integer advanceCount(String course_text, String category_text, String difficulty_text) {
+    public Integer advanceCount(String course_text, Integer category_id, String difficulty_text) {
         String sql = "SELECT count(*) FROM courses NATURAL JOIN teachers NATURAL JOIN categories NATURAL JOIN users ";
         if (!course_text.equals("")) {
 
             sql += "WHERE Match (course_name, course_description) AGAINST(" + "'" + course_text + "') AND";
         }
 
-        if (!category_text.equals("Any")) {
+        if (category_id != 0) {
             if (!sql.substring(sql.length() - 3).equals("AND")) {
                 sql += " WHERE ";
             }
 
-            sql += " categories.category_name = " + "'" + category_text + "' AND";
+            sql += " categories.category_id = " + "'" + category_id + "' AND";
         }
 
         if (!difficulty_text.equals("Any")) {

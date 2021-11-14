@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -57,10 +56,10 @@ public class CourseController {
     @GetMapping("/course/explore/{page}")
     public String courseExplore(@PathVariable(value = "page") Integer page, Model model,
                                 @RequestParam(value = "course_", required = false) String course_,
-                                @RequestParam(value = "category_", required = false) String category_,
+                                @RequestParam(value = "category_", required = false) Integer category_,
                                 @RequestParam(value = "difficulty_", required = false) String difficulty_,
                                 @RequestParam(value = "sorted_by", required = false) String sorted_by){
-        int offset = 3;
+        int offset = 4;
 
 
 
@@ -71,7 +70,7 @@ public class CourseController {
             course_ = "";
         }
         if(category_==null){
-            category_ ="Any";
+            category_ =0;
         }
 
         if(difficulty_ == null){
@@ -98,8 +97,16 @@ public class CourseController {
         PageRequest pageable = PageRequest.of(page, offset, Sort.Direction.fromString(sorting_order), sorted_by);
         Page<Course> courses = dao.advanceFilter(course_, category_, difficulty_, pageable);
         String queryString = "?course_=" +((course_==null)?"":(course_))+ "&category_="+category_+"&difficulty_="+difficulty_ + "&sorted_by=" + sorted_by;
-
+        System.out.println(queryString);
         List<Category>categories = cat_dao.findAll();
+        List<Object>enrolmentcount = new ArrayList<Object>();
+        for(Course c:courses){
+            Integer x = enrollmentDAO.getNoOfStudentsEnrolled(c.getCourseId());
+            Integer z = topicDAO.getNoOflectures(c.getCourseId());
+
+            enrolmentcount.add(new Object[]{x,z});
+        }
+        model.addAttribute("enrolmentcount", enrolmentcount);
         model.addAttribute("securityservice", securityService);
         model.addAttribute("courses", courses);
         model.addAttribute("currentPage", page);
@@ -177,36 +184,29 @@ public class CourseController {
     }
 
     @PostMapping("/course/{courseId}/save-topic")
-    public String saveTopic(@PathVariable Integer courseId,@AuthenticationPrincipal MyUserDetails loggedUser, @ModelAttribute("topic") Topic topic, @RequestParam("lectureVideo") MultipartFile multipartFile1, @RequestParam("lectureNotes") MultipartFile multipartFile2) throws IOException{
+    public String saveTopic(@PathVariable Integer courseId,@AuthenticationPrincipal MyUserDetails loggedUser, @ModelAttribute("topic") Topic topic, @RequestParam("lectureVideo") MultipartFile multipartFile1) throws IOException{
         System.out.println(topic);
         int current = topicDAO.getCount(courseId, topic.getWeek());
         topic.setTopicNumber(current+1);
         topic.setCourse(dao.get(courseId));
 
         String videolecture = StringUtils.cleanPath(multipartFile1.getOriginalFilename());
-        String notes = StringUtils.cleanPath(multipartFile2.getOriginalFilename());
 
         topic.setTopicLecture(videolecture);
-        topic.setTopicNotes(notes);
 
         File fi1 = new ClassPathResource("static/videos").getFile();
-        File fi2 = new ClassPathResource("static/notes").getFile();
 
         Topic savedTopic = topicDAO.save(topic);
 
 
         String VideouploadDir = fi1.getAbsolutePath() + "/" + courseId +"/";
-        String NotesuploadDir = fi2.getAbsolutePath() + "/" + courseId +"/";
         Path VideouploadPath = Paths.get(VideouploadDir);
-        Path NotesuploadPath = Paths.get(NotesuploadDir);
 
         if(!Files.exists(VideouploadPath)){
             Files.createDirectories(VideouploadPath);
         }
 
-        if(!Files.exists(NotesuploadPath)){
-            Files.createDirectories(NotesuploadPath);
-        }
+
 
 
 
@@ -219,14 +219,7 @@ public class CourseController {
             throw new IOException("video could not be saved");
         }
 
-        try {
-            InputStream inputStream = multipartFile2.getInputStream();
-            Path filePath = NotesuploadPath.resolve(notes);
-            System.out.println(filePath.toFile().getAbsolutePath());
-            Files.copy(inputStream,filePath, StandardCopyOption.REPLACE_EXISTING);
-        }catch (IOException e){
-            throw new IOException("notes could not be saved");
-        }
+
 
         return "redirect:/";
     }
@@ -434,6 +427,126 @@ public class CourseController {
 
 
         return "redirect:/";
+    }
+
+
+    @GetMapping("/course/{courseId}/content")
+    public String mainCourseView(Model model, @PathVariable("courseId") int courseId, @AuthenticationPrincipal MyUserDetails loggedUser){
+        model.addAttribute("securityservice",securityService);
+        Course course = dao.get(courseId);
+        model.addAttribute("course", course);
+        List<Topic>topics = topicDAO.findByCourseID(courseId);
+        ArrayList<ArrayList<Topic>> ans = new ArrayList<ArrayList<Topic>>(course.getNoOfWeeks());
+        for(int i=1;i<=course.getNoOfWeeks()+1;i++){
+            ans.add(new ArrayList<>());
+        }
+        for (Topic t:topics) {
+            ArrayList<Topic>current = ans.get(t.getWeek());
+            current.add(t);
+            ans.set(t.getWeek(), current);
+        }
+
+        for(int i=1;i<=course.getNoOfWeeks() + 1;i++){
+            Collections.sort(ans.get(i-1),new Comparator<Topic>() {
+                @Override
+                public int compare(Topic s1, Topic s2) {
+                    return Integer.compare(s1.getTopicNumber(), s2.getTopicNumber());
+                }
+            });
+        }
+
+        model.addAttribute("curriculum", ans);
+        return "mainCourseView";
+
+    }
+
+    @GetMapping("/course/video/{topicId}")
+
+    public String getVideo(Model model, @PathVariable Integer topicId){
+        Topic topic = topicDAO.get(topicId);
+        // find the course in which this topic belongs
+
+        Course course = dao.get(topic.getCourse().getCourseId());
+        model.addAttribute("course", course);
+        System.out.println(securityService.findLoggedInUserId());
+        model.addAttribute("topic", topic);
+        model.addAttribute("securityservice", securityService);
+        Boolean isvideo = true;
+        model.addAttribute("isvideo", isvideo);
+        System.out.println(isvideo);
+        return "contentPresenter";
+    }
+    @GetMapping("/course/notes/{topicId}")
+    public String getNotes(Model model, @PathVariable Integer topicId){
+        Topic topic = topicDAO.get(topicId);
+        Course course = dao.get(topic.getCourse().getCourseId());
+        model.addAttribute("course", course);
+        System.out.println(securityService.findLoggedInUserId());
+        model.addAttribute("topic", topic);
+        model.addAttribute("securityservice", securityService);
+        Boolean isvideo = false;
+        System.out.println(isvideo);
+        model.addAttribute("isvideo", isvideo);
+        return "contentPresenter";
+    }
+
+    @GetMapping("/course/edit-topic/{topicId}")
+    public String editTopic(Model model, @PathVariable Integer topicId){
+        Topic topic = topicDAO.get(topicId);
+        model.addAttribute("topic", topic);
+        model.addAttribute("securityservice", securityService);
+        return "editTopic";
+
+    }
+
+    @PostMapping("/course/update-topic/{topicId}")
+    public String updateTopic(@PathVariable Integer topicId, @ModelAttribute("topic") Topic topic, @RequestParam("lectureVideo") MultipartFile multipartFile) throws IOException{
+        Topic t1 = topicDAO.get(topicId);
+
+        Course course = t1.getCourse();
+        System.out.println(t1);
+        System.out.println(topic);
+        String videolecture = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+
+
+        File fi1 = new ClassPathResource("static/videos").getFile();
+        topic.setTopicId(t1.getTopicId());
+        topic.setCourse(course);
+        topic.setTopicNumber(t1.getTopicNumber());
+        topic.setWeek(t1.getWeek());
+
+
+
+        if(multipartFile.isEmpty()){
+            videolecture = t1.getTopicLecture();
+        }
+        else{
+            String VideouploadDir = fi1.getAbsolutePath() + "/" + course.getCourseId() +"/";
+            Path VideouploadPath = Paths.get(VideouploadDir);
+
+            if(!Files.exists(VideouploadPath)){
+                Files.createDirectories(VideouploadPath);
+            }
+
+            try {
+                InputStream inputStream = multipartFile.getInputStream();
+                Path filePath = VideouploadPath.resolve(videolecture);
+                System.out.println(filePath.toFile().getAbsolutePath());
+                Files.copy(inputStream,filePath, StandardCopyOption.REPLACE_EXISTING);
+            }catch (IOException e){
+                throw new IOException("video could not be saved");
+            }
+        }
+        topic.setTopicLecture(videolecture);
+        System.out.println(topic);
+
+        topicDAO.update(topic);
+
+
+        return "redirect:/";
+
+
+
     }
 
 

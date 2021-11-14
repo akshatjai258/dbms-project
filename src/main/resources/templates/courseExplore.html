@@ -16,8 +16,24 @@
 <div  class="d-flex flex-column justify-content-between" style="height:100vh">
     <div th:replace="home :: navbar"></div>
 
+    <div th:if="${totalPages == 0}" style="margin-top: 100px">
+        <h1 class="text-center">
+        No course found.
+        </h1>
 
-    <div class="d-flex container mt-5">
+        <div class="text-center">
+
+
+        <a th:href="@{'/course/explore/0'}">
+        <button class="btn btn-primary">
+            Go back
+        </button>
+        </a>
+        </div>
+    </div>
+
+
+    <div class="d-flex container mt-5" th:if="${totalPages !=0}">
 
 
     <div style="width: 25%; margin-right: 30px;">
@@ -30,8 +46,8 @@
             <div class="form-group">
                 <label for="exampleFormControlSelect1">Choose Category</label>
                 <select class="form-control" id="exampleFormControlSelect1" name="category_">
-                    <option>Any</option>
-                    <option  th:each="cat:${categories}"> <span th:text="${cat.categoryName}"></span> </option>
+                    <option th:text="${'Any'}" value=0>Any</option>
+                    <option  th:each="cat:${categories}" th:value="${cat.getCategoryId()}"> <span th:text="${cat.categoryName}"></span> </option>
                 </select>
             </div>
             <div class="form-group">
@@ -76,7 +92,7 @@
     </div>
 
     <div class="mt-5" style="width: 70%;">
-        <h1>Explore Featured Courses</h1>
+        <h1>Our Courses</h1>
 
 
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
@@ -85,34 +101,37 @@
 
 
             <div class="row" >
-                <th:block th:each="course : ${courses}">
+                <th:block th:each="course, iter : ${courses}">
 
-                    <div class="col-md-6 my-2">
+                    <div class="col-md-6 mt-3">
                         <div class="card" style="box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;">
-                            <img class="card-img-top" src="//placeimg.com/280/180/tech" alt="Card image cap">
+                            <img class="card-img-top" th:src="${course.getThumbnailPath()}" alt="Card image cap">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <p class="design" th:text="${course.getCategory().getCategoryName()}"></p>
-                                    <p class="enrolled">8,350 Enrolled</p>
+                                    <p class="enrolled" th:text="${enrolmentcount.get(iter.index)[0] + ' Enrolled'} "></p>
                                 </div>
 
-                                <p style="font-weight: 700;" th:text="${course.getCourseName()}"></p>
+                                <a class="subjectLink" th:href="@{'/course/' + ${course.getCourseId()} + '/preview'}"><p style="font-weight: 700;" th:text="${course.getCourseName()}"></p></a>
+
                                 <div class="d-flex justify-content-between align-items-center paragraph-parent">
 
 
-                                    <p  class="length"><i class="fa fa-clock text-danger mr-1"></i>10 hr 20 min</p>
-                                    <p class="noOfLectures"><i class="fa fa-video text-success mr-1"></i>67 lectures</p>
+                                    <p  class="length"><i class="fa fa-clock text-danger mr-1"></i> <span th:text="${course.getNoOfWeeks() + ' weeks'}"></span></p>
+                                    <p class="noOfLectures"><i class="fa fa-video text-success mr-1"></i> <span th:text="${enrolmentcount.get(iter.index)[1] +' lectures'}"></span></p>
 
-                                    <p class="expertise"><i class="fa fa-signal text-warning mr-1"></i>Beginner</p>
+                                    <p class="expertise"><i class="fa fa-signal text-warning mr-1"></i><span th:text="${course.getCourseDifficulty()}"></span></p>
                                 </div>
 
                                 <div class="d-flex justify-content-between align-items-center border-top py-2">
                                     <div class="d-flex align-items-center">
                                         <img class = "avatar mr-2" th:src="@{${course.getTeacher().getProfilePath()}}">
-                                        <p class="teacher m-0" th:text="${course.getTeacher().getUser().getFullName()}"></p>
+                                        <a th:href="@{'/user/teacher/profile/' + ${course.getTeacher().getUser().getUser_id()}}" style="text-decoration: none; color:black">
+                                            <p class="teacher m-0" th:text="${course.getTeacher().getUser().getFullName()}"></p>
+                                        </a>
                                     </div>
 
-                                    <p class="price m-0">Rs 999</p>
+                                    <p class="price m-0" ><span th:text="${course.getCoursePrice()} + ' Rs'"></span></p>
                                 </div>
 
 

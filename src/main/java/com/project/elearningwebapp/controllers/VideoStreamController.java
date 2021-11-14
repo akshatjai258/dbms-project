@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.IOException;
 
 import static java.lang.Math.min;
+
+import com.project.elearningwebapp.dao.TopicDAO;
+import com.project.elearningwebapp.models.Topic;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.ResourceRegion;
@@ -14,32 +18,36 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.apache.commons.lang3.StringUtils;
 
 @Controller
 public class VideoStreamController {
+    @Autowired
+    private TopicDAO topicDAO;
+
 
     private static final long CHUNK_SIZE = 1000000L;
-    public static final String VideoUploadingDir = System.getProperty("user.dir") + "/src/main/resources/static/Uploads/Posts/Videos";
+    public static final String VideoUploadingDir = System.getProperty("user.dir") + "/target/classes/static/";
 
-    @GetMapping(value = "/video", produces = "application/octet-stream")
-    public ResponseEntity<ResourceRegion> getVideo(@RequestHeader(value = "Range", required = false) String rangeHeader, Model model)
+    @GetMapping(value = "/course/lecture/{topicId}", produces = "application/octet-stream")
+    public ResponseEntity<ResourceRegion> getVideo(@RequestHeader(value = "Range", required = false) String rangeHeader, @PathVariable("topicId") int topicId, Model model)
             throws IOException {
 
 
         if (!new File(VideoUploadingDir).exists()) {
             new File(VideoUploadingDir).mkdirs();
         }
+        Topic topic = topicDAO.get(topicId);
+        String videoPath = topic.getVideoPath();
 
-
-
-        return getVideoRegion(rangeHeader);
+        return getVideoRegion(rangeHeader, videoPath);
     }
 
-    public ResponseEntity<ResourceRegion> getVideoRegion(String rangeHeader) throws IOException {
-        FileUrlResource videoResource = new FileUrlResource(VideoUploadingDir + "/video2.mp4");
+    public ResponseEntity<ResourceRegion> getVideoRegion(String rangeHeader, String videoPath) throws IOException {
+        FileUrlResource videoResource = new FileUrlResource(VideoUploadingDir + videoPath);
         ResourceRegion resourceRegion = getResourceRegion(videoResource, rangeHeader);
 
         return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)

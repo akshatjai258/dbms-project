@@ -22,19 +22,21 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="#" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
                 </li>
-
-                <li class="nav-item ">
-                    <a class="nav-link" href="#" th:href="@{/category/new}">Add Category <span class="sr-only">(current)</span></a>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{'/about'}">About</a>
                 </li>
+
                 <li th:if="${securityservice.findLoggedInUserId() != 0}" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="${securityservice.findLoggedInName()}">
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                        <li th:if="${securityservice.findLoggedInUser().getRole().equals('ROLE_TEACHER')}"><a class="dropdown-item" th:href="@{'/user/teacher/profile/' + ${securityservice.findLoggedInUser().getUser_id()}}">My Profile</a></li>
+                        <li><a class="dropdown-item" th:href="@{/user/account}">Edit Profile</a></li>
                         <li><a class="dropdown-item" th:href="@{/user/logout}">logout</a></li>
-                        <li><a class="dropdown-item" th:href="@{/user/account}">my profile</a></li>
 
                     </ul>
                 </li>
@@ -92,7 +94,8 @@
                             <p class="enrolled" th:text="${enrolmentcount.get(iStat.index)[0] + ' Enrolled'} "></p>
                         </div>
 
-                        <a class="subjectLink" href=""><p style="font-weight: 700;" th:text="${course.getCourseName()}"></p></a>
+                        <a class="subjectLink" th:href="@{'/course/' + ${course.getCourseId()} + '/preview'}"><p style="font-weight: 700;" th:text="${course.getCourseName()}"></p></a>
+
                         <div class="d-flex justify-content-between align-items-center paragraph-parent">
 
 
@@ -105,10 +108,12 @@
                         <div class="d-flex justify-content-between align-items-center border-top py-2">
                             <div class="d-flex align-items-center">
                                 <img class = "avatar mr-2" th:src="@{${course.getTeacher().getProfilePath()}}">
+                                <a th:href="@{'/user/teacher/profile/' + ${course.getTeacher().getUser().getUser_id()}}" style="text-decoration: none; color:black">
                                 <p class="teacher m-0" th:text="${course.getTeacher().getUser().getFullName()}"></p>
+                                </a>
                             </div>
 
-                            <p class="price m-0">Rs 999</p>
+                            <p class="price m-0" ><span th:text="${course.getCoursePrice()} + ' Rs'"></span></p>
                         </div>
 
 
@@ -119,6 +124,11 @@
 
         </th:block>
         </div>
+        <a th:href="@{'/course/explore/0'}">
+        <button class="btn btn-outline-success mt-3" >
+            view all
+        </button>
+        </a>
 
     </div>
 </section>
@@ -141,12 +151,14 @@
 
 
                 <div class="col-md-3 my-2">
+                    <a th:href="@{'/course/explore/0/?category_=' + ${category.getCategoryId()}} " style="text-decoration: none; color: black">
                     <div class="cards border">
                         <div class="first bg-white p-4 text-center"> <img th:src= "@{'/images/' + ${category.geLogoImagePath()} }"/>
                             <h5>[[${category.CategoryName}]]</h5>
                             <p></p>
                         </div>
                     </div>
+                    </a>
                 </div>
 
         </th:block>

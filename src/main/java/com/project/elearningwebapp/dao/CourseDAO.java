@@ -17,11 +17,14 @@ public interface CourseDAO {
     public List<Course>sortByRating();
     public List<Course>sortByEnrolments();
     public List<Course>sortByDate();
-    public List<Course>getAllByTeacherId(int teacherId);
+    public Page<Course>getAllByTeacherId(int teacherId, Pageable pageable);
     public List<Course>getAllByCategoryId(int categoryId);
     public List<Course>searchedCourses(String text);
     public List<Course>getAllByDifficulty(String difficulty);
-    public Page<Course>advanceFilter(String course_text, String category_text, String difficulty_text, Pageable page);
-    public Integer advanceCount(String course_text, String category_text, String difficulty_text);
+    public Page<Course>advanceFilter(String course_text, Integer category_id, String difficulty_text, Pageable page);
+    public Integer advanceCount(String course_text, Integer category_id, String difficulty_text);
     public int count();
+    public int count_new(int teacherId);
+    public int numOfLectures(int teacherId);
+
 }

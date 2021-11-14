@@ -58,6 +58,12 @@ public class HomeController {
         model.addAttribute("enrolmentcount", enrolmentcount);
         return "home";
     }
+
+    @GetMapping("/about")
+    public String about(Model model){
+        model.addAttribute("securityservice", securityService);
+        return "about";
+    }
 }
 
 

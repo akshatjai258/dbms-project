@@ -92,8 +92,8 @@ class CourseDAOImplTest {
     @Test
     void sortByEnrolments() {
         PageRequest pageable = PageRequest.of(0, 6, Sort.Direction.fromString("DESC"), "avg_rating");
-        Page<Course>course = dao.advanceFilter(null, "ANY", "ANY",pageable);
-        System.out.println(course.toList());
+//        Page<Course>course = dao.advanceFilter(null, "ANY", "ANY",pageable);
+//        System.out.println(course.toList());
     }
 
     @Test
@@ -104,8 +104,7 @@ class CourseDAOImplTest {
 
     @Test
     void getAllByTeacherId() {
-        List<Course>courses = dao.getAllByTeacherId(4);
-        System.out.println(courses);
+
     }
 
     @Test

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Category</title>
+    <link rel="stylesheet" type = "text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type = "text/css" th:href="@{/css/home.css}">
+
+    <style>
+        .whole{
+            width: 70%;
+        }
+    </style>
+</head>
+
+
+<body>
+<div  class="d-flex flex-column justify-content-between" style="height:100vh">
+    <div th:replace="home :: navbar"></div>
+
+    <div class="d-flex sidebar justify" style="margin: 80px 0px;">
+
+
+        <div class="container whole" style="box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px; padding: 30px 30px;">
+            <div class="text-center">
+                <h1 th:text="${topic.getTopicTitle()}"></h1>
+                <div th:if="${isvideo}">
+                 <video  th:src="@{'/course/lecture/' + ${topic.getTopicId()}}"   width="800px" height="500px" controls preload="none">
+                 </video>
+                <div class="d-flex justify-content-between">
+                    <a th:href = "@{'/course/' + ${course.getCourseId()} + '/content'}"><button class="btn btn-primary" style="margin-left:55px;">Back to main page</button></a>
+                    <a th:href = "@{'/course/notes/' + ${topic.getTopicId()}}"><button class="btn btn-primary" style="margin-right:55px;">Go to notes</button></a>
+                </div>
+                </div>
+            </div>
+            <div th:if="${!isvideo}" style="margin-top: 30px;">
+                <p th:utext = "${topic.getTopicNotes()}"></p>
+                <div class="d-flex justify-content-between">
+                    <a th:href = "@{'/course/' + ${course.getCourseId()} + '/content'}"><button class="btn btn-primary">Back to main page</button></a>
+                    <a th:href = "@{'/course/video/' + ${topic.getTopicId()}}"><button class="btn btn-primary">Go to video</button></a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div th:replace="home::footer"></div>
+</div>
+
+
+
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+        crossorigin="anonymous"
+        ></script>
+
+<script th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/1.12.9-1/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+</body>
+
+
+
+</html>

@@ -92,4 +92,7 @@ public class Topic {
     public void setWeek(int week) {
         this.week = week;
     }
+    public String getVideoPath(){
+        return "/videos/"+ this.getCourse().getCourseId() + "/" + this.getTopicLecture();
+    }
 }

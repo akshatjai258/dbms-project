@@ -166,6 +166,14 @@
             <button class="btn btn-big btn-outline-success">Enrolled! Start learning now</button>
         </div>
 
+        <div class="text-center" th:if="${isauthor}">
+            <a th:href="@{'/course/' + ${course.getCourseId()} + '/content'}">
+                <button class="btn btn-outline-success">
+                    view content
+                </button>
+            </a>
+        </div>
+
 
 
 

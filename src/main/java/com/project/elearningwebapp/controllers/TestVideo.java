@@ -16,6 +16,6 @@ public class TestVideo {
     public String getVideo(Model model){
         System.out.println(securityService.findLoggedInUserId());
         model.addAttribute("securityservice", securityService);
-        return "videoPlayer";
+        return "contentPresenter";
     }
 }
