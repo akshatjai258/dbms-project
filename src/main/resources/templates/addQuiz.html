@@ -1,0 +1,76 @@
+    <!DOCTYPE html>
+    <html lang="en" xmlns:th = "http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Add Category</title>
+        <link rel="stylesheet" type = "text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+        <link rel="stylesheet" type = "text/css" th:href="@{/css/home.css}">
+        <link rel="stylesheet" th:href="@{/css/richtext.min.css}" />
+    </head>
+    <body>
+
+    <div  class="d-flex flex-column justify-content-between" style="height:100vh">
+        <div th:replace="home :: navbar"></div>
+        <div class="text-center" style="margin-top: 100px;">
+
+            <h1>Add a new quiz</h1>
+
+            <div class ="container">
+                <form th:action="@{'/quiz/save/' + ${course.getCourseId()}}" method="post" th:object="${quiz}" >
+                    <div class="form-group">
+                        <div class="form-group">
+                            <label for="cname">Quiz Title</label>
+                            <input type="text" class="form-control" id="cname" th:field="*{quizTitle}" placeholder="Enter title for quiz">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cprice">Time limit (in minutes)</label>
+                        <input type="number"  class="form-control" id="cprice" th:field="*{quizTime}" placeholder="Time limit for quiz (in minutes)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Week</label>
+                        <select class="form-control" id="exampleFormControlSelect1" th:field="*{week}">
+                            <option th:each="i:${#numbers.sequence(1, course.getNoOfWeeks())}" th:value="${i}"><span th:text="${i}"></span></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lectureNotes">Quiz Description</label>
+                        <textarea id="lectureNotes" name="quizDescription" cols="30" rows="10" th:field="*{quizDescription}">
+
+                        </textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ins">Quiz Instructions</label>
+                        <textarea id="ins" name="quizInstructions" cols="30" rows="10" th:field="*{quizInstructions}">
+                        </textarea>
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+
+
+        <div th:replace="home :: footer"></div>
+    </div>
+    </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/popper.js/1.12.9-1/umd/popper.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/jquery.richtext.min.js}"></script>
+    <script>
+        $(document).ready(function () {
+            $("#ins").richText();
+            $("#lectureNotes").richText();
+
+        });
+
+    </script>
+    </html>

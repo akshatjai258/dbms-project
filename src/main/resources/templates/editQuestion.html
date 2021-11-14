@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th = "http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Category</title>
+    <link rel="stylesheet" type = "text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" type = "text/css" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/richtext.min.css}" />
+</head>
+<body>
+
+<div  class="d-flex flex-column justify-content-between" style="height:100vh">
+    <div th:replace="home :: navbar"></div>
+    <div class="text-center" style="margin-top: 100px;">
+
+        <h2>Update the question here !!</h2>
+    </div>
+
+    <div class ="container">
+        <form th:action="@{'/quiz/update-question/' +${question.getQuestionId()}}" method="post" th:object="${question}" >
+
+            <div class="form-group">
+                <label>Question</label>
+                <textarea id="hello" name="questionText" th:value="${question.questionText}" th:utext="${question.getQuestionText()}">
+                    </textarea>
+            </div>
+
+
+            <div class="d-flex my-3">
+                <div class="col-md-6">
+                    <label for="exampleFormControlInput1">Option 1</label>
+                    <input type="text" class="form-control" name="optionOne" id="exampleFormControlInput1" th:value="${question.optionOne}" placeholder="Option one">
+                </div>
+
+
+                <div class="col-md-6">
+                    <label for="exampleFormControlInput2">Option 2</label>
+                    <input type="text" class="form-control" name="optionTwo" id="exampleFormControlInput2" th:value="${question.optionTwo}" placeholder="Option two">
+                </div>
+            </div>
+
+            <div class="d-flex my-3">
+
+                <div class="col-md-6">
+                    <label for="exampleFormControlInput3">Option 3</label>
+                    <input type="text" class="form-control" name="optionThree" id="exampleFormControlInput3" th:value="${question.optionThree}" placeholder="Option three">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="exampleFormControlInput4">Option 4</label>
+                    <input type="text" class="form-control" name="optionFour" id="exampleFormControlInput4" th:value="${question.optionFour}" placeholder="Option four">
+                </div>
+            </div>
+
+            <div class="col-md-6 offset-3 my-4" >
+
+
+                <label for="exampleFormControlInput5">Answer</label>
+                <input type="text" class="form-control" name="answer" id="exampleFormControlInput5" th:value="${question.answer}" placeholder="answer">
+            </div>
+
+
+            <div class="mb-4">
+                <button type="submit" class="btn btn-primary">Edit Question</button>
+            </div>
+        </form>
+    </div>
+
+
+
+    <div th:replace="home :: footer"></div>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/1.12.9-1/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/jquery.richtext.min.js}"></script>
+<script>
+    $(document).ready(function () {
+        $("#ins").richText();
+        $("#hello").richText();
+
+    });
+
+
+
+
+
+</script>
+</html>

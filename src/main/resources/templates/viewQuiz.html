@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th = "http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Category</title>
+    <link rel="stylesheet" type = "text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type = "text/css" th:href="@{/css/home.css}">
+
+
+</head>
+<body>
+<div  class="d-flex flex-column justify-content-between" style="height:100vh">
+    <div th:replace="home :: navbar"></div>
+    <div class="container">
+        <div class="container d-flex" >
+            <div style=" width:100%; margin-top: 100px; padding: 10px 20px; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
+                <h4 th:text="${quiz.getQuizTitle()}"></h4>
+                <p th:utext="${quiz.getQuizDescription()}"></p>
+            </div>
+
+        </div>
+
+
+        <div class="container d-flex" >
+            <div style=" width:100%; margin-top: 10px; padding: 10px 20px; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
+                <h4> Instructions </h4>
+                <p th:utext="${quiz.getQuizInstructions()}"></p>
+            </div>
+
+        </div>
+
+         <div class="container d-flex" >
+            <div style=" width:100%; margin: 20px 0px; padding: 10px 20px; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
+
+                <h3>Questions</h3>
+                <div th:each="q, iterStat : ${questionList}" style="border:1px solid black;padding:20px; margin:20px 0px">
+
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{'/quiz/edit-question/' + ${q.getQuestionId()}}"><button class="btn btn-primary">Edit</button></a>
+                        <button class="btn btn-danger">Delete</button>
+                    </div>
+                    <div class="question-content mt-3">
+                        <p class="ml-3" th:utext="'Q'+ ${iterStat.index + 1}+' '+  ${q.getQuestionText()}"></p>
+
+                        <div class="d-flex">
+                            <div class="col-md-4 mx-3 my-2 pt-2" style=" margin:10px; padding-top:10px; " th:style="${!q.getAnswer().equals(q.getOptionOne()) } ? 'border : 2px solid red' : 'border : 2px solid green'">
+                                <p>A) <span th:text="${q.getOptionOne()}"></span></p>
+                            </div>
+                            <div class="col-md-4 mx-3 my-2 pt-2" style=" margin:10px; padding-top:10px; " th:style="${!q.getAnswer().equals(q.getOptionTwo()) } ? 'border : 2px solid red' : 'border : 2px solid green'">
+                                <p>B) <span th:text="${q.getOptionTwo()}"></span></p>
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex">
+                            <div class="col-md-4 mx-3 my-2 pt-2" style=" margin:10px; padding-top:10px; " th:style="${!q.getAnswer().equals(q.getOptionThree()) } ? 'border : 2px solid red' : 'border : 2px solid green'">
+                                <p>C) <span th:text="${q.getOptionThree()}"></span></p>
+                            </div>
+                            <div class="col-md-4 mx-3 my-2 pt-2" style=" margin:10px; padding-top:10px; " th:style="${!q.getAnswer().equals(q.getOptionFour()) } ? 'border : 2px solid red' : 'border : 2px solid green'">
+                                <p>D) <span th:text="${q.getOptionFour()}"></span></p>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+    <div th:replace = "home::footer"></div>
+</div>
+
+<script th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/1.12.9-1/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+
+</body>
+</body>
+</html>
