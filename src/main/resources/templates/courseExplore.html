@@ -125,7 +125,7 @@
 
                                 <div class="d-flex justify-content-between align-items-center border-top py-2">
                                     <div class="d-flex align-items-center">
-                                        <img class = "avatar mr-2" th:src="@{${course.getTeacher().getProfilePath()}}">
+                                        <img class = "avatar mr-2" th:src="@{ ${ mainDir + course.getTeacher().getProfilePath()}}">
                                         <a th:href="@{'/user/teacher/profile/' + ${course.getTeacher().getUser().getUser_id()}}" style="text-decoration: none; color:black">
                                             <p class="teacher m-0" th:text="${course.getTeacher().getUser().getFullName()}"></p>
                                         </a>
