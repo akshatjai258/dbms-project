@@ -35,6 +35,9 @@
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 
                         <li th:if="${securityservice.findLoggedInUser().getRole().equals('ROLE_TEACHER')}"><a class="dropdown-item" th:href="@{'/user/teacher/profile/' + ${securityservice.findLoggedInUser().getUser_id()}}">My Profile</a></li>
+                        <li th:if="${securityservice.findLoggedInUser().getRole().equals('ROLE_STUDENT')}"><a class="dropdown-item" th:href="@{'/student/my-courses/0'}">My Courses</a></li>
+                        <li th:if="${securityservice.findLoggedInUser().getRole().equals('ROLE_TEACHER')}"><a class="dropdown-item" th:href="@{'/course/new/'}">Create course</a></li>
+                        <li th:if="${securityservice.findLoggedInUser().getRole().equals('ROLE_TEACHER')}"><a class="dropdown-item" th:href="@{'/courses/teacher/' + ${securityservice.findLoggedInUser().getUser_id()} +'/0'}">Manage Courses</a></li>
                         <li><a class="dropdown-item" th:href="@{/user/account}">Edit Profile</a></li>
                         <li><a class="dropdown-item" th:href="@{/user/logout}">logout</a></li>
 
@@ -79,8 +82,7 @@
     <div class="container text-center">
         <h1>Explore Featured Courses</h1>
 
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-            labore Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+        <p>Your learning journey starts here with our awesome courses. We have courses under several categories feel free to explore all of these coruses  </p>
 
         <div class="row">
         <th:block th:each="course,iStat : ${courses}">
@@ -132,9 +134,6 @@
 
     </div>
 </section>
-
-
-
 
 
 <section class="categories py-5">

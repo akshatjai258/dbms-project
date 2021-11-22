@@ -26,5 +26,6 @@ public interface CourseDAO {
     public int count();
     public int count_new(int teacherId);
     public int numOfLectures(int teacherId);
+    public void updateRating(int courseId, double avgRating);
 
 }

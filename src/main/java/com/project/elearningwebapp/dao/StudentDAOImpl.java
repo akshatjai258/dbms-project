@@ -33,7 +33,7 @@ public class StudentDAOImpl implements StudentDAO {
 
     @Override
     public Student save(Student student) {
-        String sql = "INSERT INTO students (gender, date_of_birth, country, state, city, street, pincode, house_no, user_id, profile_pic) VALUES(?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO students (gender, date_of_birth, country, state, city, street, pincode, house_no, user_id) VALUES(?,?,?,?,?,?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator(){
             @Override
@@ -41,7 +41,7 @@ public class StudentDAOImpl implements StudentDAO {
                 PreparedStatement preparedStatement = con.prepareStatement(sql, new String[] {"student_id"});
                 preparedStatementUtil.setParameters(preparedStatement, student.getGender(), student.getDateOfBirth(),
                         student.getCountry(), student.getState(), student.getCity(), student.getStreet(), student.getPincode(),
-                        student.getHouseNo(), student.getUser().getUser_id(), student.getProfilePic());
+                        student.getHouseNo(), student.getUser().getUser_id());
                 return preparedStatement;
             }
         }, keyHolder);

@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.Array;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -51,6 +52,12 @@ public class CourseController {
     @Autowired
     private EnrollmentDAO enrollmentDAO;
 
+    @Autowired
+    private QuizDAO quizDAO;
+
+    @Autowired
+    private QuizAttemptDAO quizAttemptDAO;
+
 
 
     @GetMapping("/course/explore/{page}")
@@ -60,10 +67,6 @@ public class CourseController {
                                 @RequestParam(value = "difficulty_", required = false) String difficulty_,
                                 @RequestParam(value = "sorted_by", required = false) String sorted_by){
         int offset = 4;
-
-
-
-
 
 
         if(course_ == null){
@@ -119,7 +122,14 @@ public class CourseController {
     }
 
     @GetMapping("/course/new")
-    public String createCourse(Model model){
+    public String createCourse(Model model, @AuthenticationPrincipal MyUserDetails loggedUser){
+        // Requirement :: user must be a teacher
+
+        if(loggedUser == null || loggedUser.getUser().getRole().equals("ROLE_STUDENT")){
+            return "redirect:/";
+        }
+
+
         Course course = new Course();
         model.addAttribute("course", course);
         List<Category>categories = cat_dao.findAll();
@@ -170,13 +180,27 @@ public class CourseController {
         return "redirect:/";
     }
 
-    @GetMapping("/course/{courseId}/add-topic")
 
-    public String addTopic(@PathVariable Integer courseId, Model model){
+
+    @GetMapping("/course/{courseId}/add-topic")
+    public String addTopic(@PathVariable Integer courseId, Model model, @AuthenticationPrincipal MyUserDetails loggedUser){
+        // Requirement user must be author of course
+        if(loggedUser == null || loggedUser.getUser().getRole().equals("ROLE_STUDENT")){
+            return "redirect:/";
+        }
+        // check if current user is author
+
+
+
+
+
         System.out.println(courseId);
         Topic topic = new Topic();
         Course course = dao.get(courseId);
 
+        if(course.getTeacher().getUser().getUser_id() != loggedUser.getUser().getUser_id()){
+            return "redirect:/";
+        }
         model.addAttribute("topic", topic);
         model.addAttribute("securityservice", securityService);
         model.addAttribute("totalweeks", course.getNoOfWeeks());
@@ -236,23 +260,28 @@ public class CourseController {
         model.addAttribute("fourstarcount", feedbackDAO.numberOfStars(4, courseId));
         model.addAttribute("fivestarcount", feedbackDAO.numberOfStars(5, courseId));
 
+        Boolean notLoggedIn = false;
+        if(loggedUser == null){
+            notLoggedIn = true;
+        }
 
+        model.addAttribute("notLoggedIn", notLoggedIn);
         Feedback feedback = new Feedback();
         Enrollment enrollment = new Enrollment();
         Boolean isEnrolled = true;
 
         Boolean isTeacher = false;
-        if(loggedUser.getUser().getRole().equals("ROLE_TEACHER")){
+        if(loggedUser!=null && loggedUser.getUser().getRole().equals("ROLE_TEACHER")){
             isTeacher = true;
         }
-        if(isTeacher || !enrollmentDAO.isEnrolled(studentDAO.getStudentIdByUserId(loggedUser.getUser().getUser_id()), courseId)){
+        if(loggedUser==null || isTeacher || !enrollmentDAO.isEnrolled(studentDAO.getStudentIdByUserId(loggedUser.getUser().getUser_id()), courseId)){
             isEnrolled = false;
         }
 
 
         Boolean isFeedbackGiven = true;
 
-        if(isTeacher || !feedbackDAO.isFeedbackGiven(studentDAO.getStudentIdByUserId(loggedUser.getUser().getUser_id()), courseId)){
+        if(loggedUser == null ||  isTeacher || !feedbackDAO.isFeedbackGiven(studentDAO.getStudentIdByUserId(loggedUser.getUser().getUser_id()), courseId)){
             isFeedbackGiven = false;
         }
         model.addAttribute("isFeedbackGiven", isFeedbackGiven);
@@ -307,7 +336,7 @@ public class CourseController {
 
         // if the current user is the author of this course
         Boolean isauthor = false;
-        if(isTeacher && tdao.getTeacherIdByUserId(loggedUser.getUser().getUser_id()) == course.getTeacher().getTeacherId()){
+        if(loggedUser != null && isTeacher && tdao.getTeacherIdByUserId(loggedUser.getUser().getUser_id()) == course.getTeacher().getTeacherId()){
             isauthor=true;
         }
 
@@ -317,6 +346,8 @@ public class CourseController {
 
     @PostMapping("/course/{courseId}/save-feedback")
     public String saveFeedback(@PathVariable Integer courseId, @AuthenticationPrincipal MyUserDetails loggedUser, @ModelAttribute("feedback") Feedback feedback){
+
+
         System.out.println(feedback);
         System.out.println(loggedUser.getUser());
         if(loggedUser.getUser().getRole().equals("ROLE_STUDENT")){
@@ -324,7 +355,23 @@ public class CourseController {
             feedback.setStudent(studentDAO.getByUserId(loggedUser.getUser().getUser_id()));
             feedback.setCourse(dao.get(courseId));
             System.out.println(feedback);
-            feedbackDAO.save(feedback);
+            Feedback savedFeedback = feedbackDAO.save(feedback);
+            // update the course on which feedback is given
+
+            Course course = dao.get(courseId);
+            double x=0;
+            List<Feedback>feedbacks = feedbackDAO.getByCourseId(courseId);
+            Integer sum =0, cnt = 0;
+            for(Feedback f:feedbacks){
+                sum += f.getStar();
+                cnt++;
+            }
+            x = (double)sum/cnt;
+            System.out.println(x);
+            System.out.println(dao.get(courseId));
+            course.setAvgRating(x);
+            System.out.println(dao.get(courseId));
+            dao.updateRating(courseId, x);
         }
 
         return "redirect:/";
@@ -357,12 +404,30 @@ public class CourseController {
         feedback.setCourse(oldFeedback.getCourse());
         feedback.setStudent(oldFeedback.getStudent());
         feedbackDAO.update(feedback);
+
+        Course course = dao.get(courseId);
+        double x=0;
+        List<Feedback>feedbacks = feedbackDAO.getByCourseId(courseId);
+        Integer sum =0, cnt = 0;
+        for(Feedback f:feedbacks){
+            sum += f.getStar();
+            cnt++;
+        }
+        x = (double)sum/cnt;
+        System.out.println(x);
+        course.setAvgRating(x);
+        dao.updateRating(courseId, x);
+
         return "redirect:/";
     }
 
     @GetMapping("/course/edit-details/{courseId}")
     public String editCourseDetails(@PathVariable("courseId") Integer courseId, @AuthenticationPrincipal MyUserDetails loggedUser, Model model){
         // find the course with courseId
+
+        if(loggedUser==null || loggedUser.getUser().getRole().equals("ROLE_STUDENT")){
+            return "redirect:/";
+        }
 
         if(tdao.getTeacherIdByUserId(loggedUser.getUser().getUser_id()) != dao.get(courseId).getTeacher().getTeacherId()){
             return "redirect:/";
@@ -399,7 +464,7 @@ public class CourseController {
 
         if(multipartFile.isEmpty()){
 
-            fileName = course.getCourseThumbnail();
+            fileName = oldCourse.getCourseThumbnail();
         }
         else{
             String uploadDir = fi.getAbsolutePath() +"/course-thumbnails/"+ courseId;
@@ -414,13 +479,14 @@ public class CourseController {
             try {
                 InputStream inputStream = multipartFile.getInputStream();
                 Path filePath = uploadPath.resolve(fileName);
-                System.out.println(filePath.toFile().getAbsolutePath());
+
                 Files.copy(inputStream,filePath, StandardCopyOption.REPLACE_EXISTING);
             }catch (IOException e){
                 throw new IOException("file could not be saved");
             }
         }
 
+        System.out.println(fileName);
         course.setCourseThumbnail(fileName);
         dao.update(course);
 
@@ -432,18 +498,75 @@ public class CourseController {
 
     @GetMapping("/course/{courseId}/content")
     public String mainCourseView(Model model, @PathVariable("courseId") int courseId, @AuthenticationPrincipal MyUserDetails loggedUser){
-        model.addAttribute("securityservice",securityService);
+
+        // Requirement :: user must be either student enrolled in the course or he must be teacher who created this course
+
         Course course = dao.get(courseId);
+        if(loggedUser == null){
+            return "redirect:/";
+        }
+
+        if(loggedUser.getUser().getRole().equals("ROLE_STUDENT")){
+            if(!enrollmentDAO.isEnrolled(studentDAO.getStudentIdByUserId(loggedUser.getUser().getUser_id()), courseId)){
+                return "redirect:/";
+            }
+        }
+        else{
+            if(tdao.getTeacherIdByUserId(loggedUser.getUser().getUser_id()) == course.getTeacher().getTeacherId()){
+
+            }
+            else{
+                return "redirect:/";
+            }
+        }
+
+        model.addAttribute("securityservice",securityService);
+
         model.addAttribute("course", course);
+
+        Teacher teacher = course.getTeacher();
         List<Topic>topics = topicDAO.findByCourseID(courseId);
+        List<Quiz>quizzes = quizDAO.findAllByCourseId(courseId);
+
         ArrayList<ArrayList<Topic>> ans = new ArrayList<ArrayList<Topic>>(course.getNoOfWeeks());
+        ArrayList<ArrayList<Quiz>> ans2 = new ArrayList<ArrayList<Quiz>>(course.getNoOfWeeks());
+        ArrayList<ArrayList<Boolean>>attempts = new ArrayList<ArrayList<Boolean>>(course.getNoOfWeeks());
+
         for(int i=1;i<=course.getNoOfWeeks()+1;i++){
             ans.add(new ArrayList<>());
+            ans2.add(new ArrayList<>());
+            attempts.add(new ArrayList<>());
         }
         for (Topic t:topics) {
             ArrayList<Topic>current = ans.get(t.getWeek());
             current.add(t);
             ans.set(t.getWeek(), current);
+        }
+
+        for (Quiz q:quizzes) {
+            ArrayList<Quiz>current = ans2.get(q.getWeek());
+
+
+            current.add(q);
+            ans2.set(q.getWeek(), current);
+        }
+
+        if(loggedUser.getUser().getRole().equals("ROLE_STUDENT")){
+            for (Quiz q:quizzes) {
+
+                ArrayList<Boolean>cur = attempts.get(q.getWeek());
+                QuizAttempt quizAttempt = quizAttemptDAO.getByStudentAndQuizID(studentDAO.getStudentIdByUserId(loggedUser.getUser().getUser_id()), q.getQuizId());
+                if(quizAttempt == null || quizAttempt.equals(null)){
+
+                    cur.add(false);
+                }
+                else{
+                    cur.add(true);
+                }
+                attempts.set(q.getWeek(), cur);
+            }
+            System.out.println(attempts);
+
         }
 
         for(int i=1;i<=course.getNoOfWeeks() + 1;i++){
@@ -453,20 +576,59 @@ public class CourseController {
                     return Integer.compare(s1.getTopicNumber(), s2.getTopicNumber());
                 }
             });
+
         }
+        model.addAttribute("quizzes", ans2);
+        model.addAttribute("attempts", attempts);
+        Boolean isauthor = false;
+        if(loggedUser.getUser().getRole().equals("ROLE_TEACHER") && loggedUser.getUser().getUser_id() == teacher.getUser().getUser_id()){
+
+            isauthor = true;
+        }
+        model.addAttribute("isauthor", isauthor);
+        System.out.println(isauthor);
+
+
+
 
         model.addAttribute("curriculum", ans);
+
+
         return "mainCourseView";
 
     }
 
     @GetMapping("/course/video/{topicId}")
 
-    public String getVideo(Model model, @PathVariable Integer topicId){
+    public String getVideo(Model model, @PathVariable Integer topicId, @AuthenticationPrincipal MyUserDetails loggedUser){
+
+
         Topic topic = topicDAO.get(topicId);
         // find the course in which this topic belongs
 
         Course course = dao.get(topic.getCourse().getCourseId());
+
+        if(loggedUser == null){
+            return "redirect:/";
+        }
+
+        if(loggedUser.getUser().getRole().equals("ROLE_STUDENT")){
+            if(!enrollmentDAO.isEnrolled(studentDAO.getStudentIdByUserId(loggedUser.getUser().getUser_id()), course.getCourseId())){
+                return "redirect:/";
+            }
+        }
+        else{
+            if(tdao.getTeacherIdByUserId(loggedUser.getUser().getUser_id()) == course.getTeacher().getTeacherId()){
+
+            }
+            else{
+                return "redirect:/";
+            }
+        }
+
+
+
+
         model.addAttribute("course", course);
         System.out.println(securityService.findLoggedInUserId());
         model.addAttribute("topic", topic);
@@ -477,9 +639,29 @@ public class CourseController {
         return "contentPresenter";
     }
     @GetMapping("/course/notes/{topicId}")
-    public String getNotes(Model model, @PathVariable Integer topicId){
+    public String getNotes(Model model, @PathVariable Integer topicId, @AuthenticationPrincipal MyUserDetails loggedUser){
         Topic topic = topicDAO.get(topicId);
         Course course = dao.get(topic.getCourse().getCourseId());
+
+
+        if(loggedUser == null){
+            return "redirect:/";
+        }
+
+        if(loggedUser.getUser().getRole().equals("ROLE_STUDENT")){
+            if(!enrollmentDAO.isEnrolled(studentDAO.getStudentIdByUserId(loggedUser.getUser().getUser_id()), course.getCourseId())){
+                return "redirect:/";
+            }
+        }
+        else{
+            if(tdao.getTeacherIdByUserId(loggedUser.getUser().getUser_id()) == course.getTeacher().getTeacherId()){
+
+            }
+            else{
+                return "redirect:/";
+            }
+        }
+
         model.addAttribute("course", course);
         System.out.println(securityService.findLoggedInUserId());
         model.addAttribute("topic", topic);
@@ -491,8 +673,22 @@ public class CourseController {
     }
 
     @GetMapping("/course/edit-topic/{topicId}")
-    public String editTopic(Model model, @PathVariable Integer topicId){
+    public String editTopic(Model model, @PathVariable Integer topicId, @AuthenticationPrincipal MyUserDetails loggedUser){
+        // Requirement :: user must be author of the course
+
+
+
         Topic topic = topicDAO.get(topicId);
+        Course course = dao.get(topic.getCourse().getCourseId());
+
+        if(loggedUser == null || loggedUser.getUser().getRole().equals("ROLE_STUDENT")){
+            return "redirect:/";
+        }
+
+
+        if(tdao.getTeacherIdByUserId(loggedUser.getUser().getUser_id()) != dao.get(course.getCourseId()).getTeacher().getTeacherId()){
+            return "redirect:/";
+        }
         model.addAttribute("topic", topic);
         model.addAttribute("securityservice", securityService);
         return "editTopic";
@@ -544,10 +740,6 @@ public class CourseController {
 
 
         return "redirect:/";
-
-
-
     }
-
 
 }

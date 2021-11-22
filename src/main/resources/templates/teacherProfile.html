@@ -39,10 +39,10 @@
 
         </div>
 
-        <div style=" width:100%; margin: 20px 0px; padding: 20px 20px 20px 20px; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
+        <div th:if="${courses.getContent().size()>0}" style=" width:100%; margin: 20px 0px; padding: 20px 20px 20px 20px; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
 
 
-        <h2 class="text-center">Some popular courses by <span th:text="${teacher.getUser().getFullName()}"></span></h2>
+        <h2  class="text-center">Some popular courses by <span th:text="${teacher.getUser().getFullName()}"></span></h2>
             <div class="row">
                 <th:block th:each="course,iStat : ${courses}">
 
@@ -82,8 +82,8 @@
 
                 </th:block>
             </div>
-            <div class="text-center mt-3">
-                <a th:href="@{'/courses/teacher/' +${teacher.getTeacherId()} +'/0'}">
+            <div  class="text-center mt-3">
+                <a th:href="@{'/courses/teacher/' +${teacher.getUser().getUser_id()} +'/0'}">
                     <button class="btn btn-success">
                         view all
                     </button>
@@ -91,6 +91,19 @@
                 </a>
             </div>
 
+        </div>
+
+
+        <div th:if="${courses.getContent().size()==0}" style=" width:100%; margin: 20px 0px; padding: 20px 20px 20px 20px; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
+
+            <h2  class="text-center">No courses by <span th:text="${teacher.getUser().getFullName()}"></span></h2>
+        </div>
+        <div class="text-center">
+            <a th:href="@{'/course/new'}">
+        <button class="btn btn-primary">
+            Add a course
+        </button>
+            </a>
         </div>
 
     </div>

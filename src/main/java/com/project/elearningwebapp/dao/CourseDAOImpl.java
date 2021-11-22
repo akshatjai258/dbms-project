@@ -73,6 +73,7 @@ public class CourseDAOImpl implements CourseDAO {
 
     }
 
+
     @Override
     public void delete(int courseId) {
         String sql = "DELETE FROM courses WHERE course_id =?";
@@ -104,6 +105,12 @@ public class CourseDAOImpl implements CourseDAO {
 
         String sql = "SELECT count(*) from courses NATURAL JOIN topics where courses.teacher_id = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{teacherId}, Integer.class);
+    }
+
+    @Override
+    public void updateRating(int courseId, double avgRating) {
+        String sql = "UPDATE courses SET avg_rating = ? WHERE course_id =?";
+        jdbcTemplate.update(sql, avgRating, courseId);
     }
 
     @Override

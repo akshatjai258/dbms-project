@@ -6,45 +6,212 @@
     <link rel="stylesheet" type = "text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <link rel="stylesheet" type = "text/css" th:href="@{/css/home.css}">
+    <style>
+        .signUp {
+            width: 50%;
+            margin: auto;
+            border: 0px;
+            border-radius: 12px;
+            background-color: #fff;
+            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+        }
+        .personLogo {
+            border: 0px;
+            border-radius: 100%;
+            padding: 25px;
+            position: absolute;
+            background-color: #fff;
+            left: 43%;
+            bottom: -40px;
+            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+        }
+        .image {
+            position: relative;
+        }
+        .text-line {
+            background-color: transparent;
+            color: black;
+            outline: none;
+            outline-style: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: solid black 1px;
+        }
+        form {
+            padding: 0 2rem 1rem;
+        }
+        .flname {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+        }
+        .flname div {
+            width: 50%;
+        }
+        label {
+            display: block;
+            margin-top: 0.8rem;
+            font-size: 1rem;
+        }
+        input {
+            font-size: 1rem;
+            margin: 0.5rem 0 0;
+            padding:0.3rem 0.6rem;
+            width: 80%;
+        }
+        .submitButtonSignUp {
+            background-color: #03b97c;
+            color: white;
+            padding: 1rem;
+            width: 94%;
+            border: 0px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            margin: 1rem 0;
+        }
+        .checkboxes {
+            display: flex;
+        }
+        .bottompart {
+            border-top: 1px solid rgba(211, 211, 211, 0.692);
+        }
+        .bottompart h3 {
+            font-size: 1.2rem;
+        }
 
+    </style>
 </head>
 <body>
 
 <div  class="d-flex flex-column justify-content-between" style="height:100vh">
     <div th:replace="home :: navbar"></div>
-    <div class="container-fluid text-center " style="margin-top: 150px;">
 
-        <form th:action="@{/user/save}" method="post" th:object="${user}" style="max-width: 350px; margin: 0 auto;">
+    <div class="signUp" style="margin-top: 100px;">
+        <div class="image">
+            <img
+                    style="
+            width: 100%;
+            border-radius: 12px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;"
 
-            <div class="border border-secondary p-3 rounded">
-                <p>Register Now</p>
-                <p>
-                    <input type="text" name="username" class="form-control" placeholder="username" th:field = "*{username}" required autofocus/>
-                </p>
-                <p>
-                    <input type="text" name="firstName" class="form-control" placeholder="First Name" th:field = "*{firstName}" required />
-                </p>
-                <p>
-                    <input type="text" name="lastName" class="form-control" placeholder="Last Name" th:field = "*{lastName}" required />
-                </p>
+                    th:src="@{'/images/assets/banner-2.jpg'}"
+                    alt=""
+            />
+            <img class="personLogo" th:src="@{'/images/assets/person.png'}" alt="" />
+        </div>
+        <div>
+            <h2 style="text-align: center; margin-top: 2.5rem">
+                Sign Up Your Account
+            </h2>
+            <form th:action="@{/user/save}" method="post" th:object="${user}">
 
-                <p>
-                    <input type="text" name="emailId" class="form-control" placeholder="Email Address" th:field = "*{emailId}" required />
-                </p>
+                <div class="flname">
 
-                <p>
-                    <input type="text" name="role" class="form-control" placeholder="Role" th:field = "*{role}" required/>
-                </p>
-                <p>
-                    <input type="password" name="password" class="form-control" placeholder="Password" th:field = "*{password}" required />
-                </p>
+                    <div>
+                        <label for="username">Username</label>
+                        <input
+                                type="text"
+                                class="text-line"
+                                id="username"
+                                placeholder="Username"
+                                th:field = "*{username}"
+                                required autofocus
+                        />
+                    </div>
 
-                <p>
-                    <input type="submit" value="Register" class="btn btn-primary" />
-                </p>
-            </div>
-        </form>
+                    <div>
+                        <label for="email">Your Email</label>
+                        <input
+                                class="text-line"
+                                type="email"
+                                name="email"
+                                id="email"
+                                placeholder="support@test.com"
+                                th:field="*{emailId}"
+
+                        />
+                    </div>
+
+                </div>
+
+                <div class="flname">
+                    <div>
+                        <label for="fname">First Name</label>
+                        <input
+                                type="text"
+                                class="text-line"
+                                id="fname"
+                                placeholder="First Name"
+                                th:field = "*{firstName}"
+                        />
+                    </div>
+                    <div>
+                        <label for="lname">Last Name</label>
+                        <input
+                                type="text"
+                                class="text-line"
+                                id="lname"
+                                placeholder="Last Name"
+                                th:field = "*{lastName}"
+                        />
+                    </div>
+                </div>
+
+
+                <div style="width: 100%">
+                    <label for="password">Your Password</label>
+                    <input
+                            class="text-line"
+                            type="password"
+                            name="password"
+                            id="password"
+                            placeholder="*********"
+                            style="width: 90%"
+                            th:field="*{password}"
+                    />
+                </div>
+                <div style="display: flex; justify-content: space-around" class="mt-3">
+                    <div style="display: flex">
+                        <input type="radio" style="width: unset" id="tutor" name="role" value="ROLE_TEACHER" th:field="*{role}"/>
+                        <label for="tutor" style="margin: auto 15px; font-size: 1.2rem">As tutor</label>
+                    </div>
+                    <div style="display: flex">
+                        <input
+                                type="radio"
+                                style="width: unset"
+                                id="student"
+                                name="role"
+                                value="ROLE_STUDENT"
+                                th:field="*{role}"
+                        />
+                        <label for="student" style="margin: auto 15px; font-size: 1.2rem">As student</label>
+
+                    </div>
+                </div>
+                <div style="width: 100%">
+                    <button type="submit" class="submitButtonSignUp">Sign UP</button>
+                </div>
+                <div
+                        style="display: flex; justify-content: space-between"
+                        class="bottompart pt-3">
+                    <div>
+                        <h3 style="font-weight: 400">
+                            Already have a account?
+                            <a
+                                    style="text-decoration: none; color: #03b97c"
+                                    th:href="@{/user/login}"
+                            >Login</a
+                            >
+                        </h3>
+                    </div>
+
+                </div>
+            </form>
+        </div>
     </div>
+
     <div th:replace="home :: footer"></div>
 </div>
 </body>

@@ -35,11 +35,24 @@ public class QuizController {
     @Autowired
     private StudentDAO studentDAO;
 
+    @Autowired
+    private EnrollmentDAO enrollmentDAO;
+
     @GetMapping("/quiz/add/{courseId}")
-    public String addQuizForm(Model model, @PathVariable Integer courseId){
+    public String addQuizForm(Model model, @PathVariable Integer courseId, @AuthenticationPrincipal MyUserDetails loggedUser){
+
+        // Requirement user must be author
+
+        if(loggedUser == null || loggedUser.getUser().getRole().equals("ROLE_STUDENT")){
+            return "redirect:/";
+        }
         model.addAttribute("securityservice", securityService);
         Quiz quiz = new Quiz();
         Course course = courseDAO.get(courseId);
+
+        if(course.getTeacher().getUser().getUser_id() != loggedUser.getUser().getUser_id()){
+            return "redirect:/";
+        }
         quiz.setCourse(course);
         model.addAttribute("course", course);
         model.addAttribute("quiz", quiz);
@@ -51,14 +64,27 @@ public class QuizController {
     public String saveQuiz(@ModelAttribute("quiz") Quiz quiz, @PathVariable Integer courseId){
         System.out.println(quiz);
         quiz.setCourse(courseDAO.get(courseId));
-        quizDAO.save(quiz);
-        return "redirect:/";
+        Quiz saveedQuiz = quizDAO.save(quiz);
+        return "redirect:/teacher/view-quiz/" + saveedQuiz.getQuizId();
     }
 
     @GetMapping("/quiz/add-question/{quizId}")
-    public String addQuestion(Model model, @PathVariable Integer quizId){
+    public String addQuestion(Model model, @PathVariable Integer quizId, @AuthenticationPrincipal MyUserDetails loggedUser){
+
+        if(loggedUser == null || loggedUser.getUser().getRole().equals("ROLE_STUDENT")){
+            return "redirect:/";
+        }
+
+
+
         Quiz quiz = quizDAO.get(quizId);
         model.addAttribute("quiz", quiz);
+
+        Course course = courseDAO.get(quiz.getCourse().getCourseId());
+        if(course.getTeacher().getUser().getUser_id() != loggedUser.getUser().getUser_id()){
+            return "redirect:/";
+        }
+
         model.addAttribute("securityservice", securityService);
         Question question = new Question();
         model.addAttribute("question", question);
@@ -73,12 +99,22 @@ public class QuizController {
         System.out.println(question);
         questionDAO.save(question);
 
-        return "redirect:/";
+        return "redirect:/teacher/view-quiz/" + quizId;
     }
 
     @GetMapping("/quiz/edit-question/{questionId}")
-    public String editQuestion(Model model, @PathVariable Integer questionId){
+    public String editQuestion(Model model, @PathVariable Integer questionId, @AuthenticationPrincipal MyUserDetails loggedUser){
+
+        if(loggedUser == null || loggedUser.getUser().getRole().equals("ROLE_STUDENT")){
+            return "redirect:/";
+        }
         Question question = questionDAO.get(questionId);
+
+        Course course = courseDAO.get(question.getQuiz().getCourse().getCourseId());
+
+        if(course.getTeacher().getUser().getUser_id() != loggedUser.getUser().getUser_id()){
+            return "redirect:/";
+        }
         model.addAttribute("question", question);
         model.addAttribute("securityservice", securityService);
         Quiz quiz = question.getQuiz();
@@ -88,9 +124,14 @@ public class QuizController {
     }
 
     @GetMapping("/teacher/view-quiz/{quizId}")
-    public String viewQuiz(@PathVariable Integer quizId, Model model){
+    public String viewQuiz(@PathVariable Integer quizId, Model model, @AuthenticationPrincipal MyUserDetails loggedUser){
         model.addAttribute("securityservice", securityService);
         Quiz quiz = quizDAO.get(quizId);
+
+        Course course = courseDAO.get(quiz.getCourse().getCourseId());
+        if(course.getTeacher().getUser().getUser_id() != loggedUser.getUser().getUser_id()){
+            return "redirect:/";
+        }
 
         model.addAttribute("quiz", quiz);
         List<Question> questionList = questionDAO.findByQuizId(quizId);
@@ -108,10 +149,19 @@ public class QuizController {
     }
 
     @GetMapping("/quiz/attempt/{quizId}")
-    public String attemptQuiz(Model model, @PathVariable Integer quizId){
+    public String attemptQuiz(Model model, @PathVariable Integer quizId, @AuthenticationPrincipal MyUserDetails loggedUser){
+        // Requirement : student must be enrolled in the course to give the qui
+
+        if(loggedUser.getUser().getRole().equals("ROLE_TEACHER")){
+            return "redirect:/";
+        }
+
+        Quiz quiz = quizDAO.get(quizId);
+        if(!enrollmentDAO.isEnrolled(studentDAO.getStudentIdByUserId(loggedUser.getUser().getUser_id()), courseDAO.get(quiz.getCourse().getCourseId()).getCourseId())){
+            return "redirect:/";
+        }
 
         model.addAttribute("securityservice", securityService);
-        Quiz quiz = quizDAO.get(quizId);
 
         model.addAttribute("quiz", quiz);
         List<Question> questionList = questionDAO.findByQuizId(quizId);
@@ -149,10 +199,33 @@ public class QuizController {
         quizAttempt.setTotalMarks(total);
 
         quizAttemptDAO.save(quizAttempt);
-        return "redirect:/";
+        return "redirect:/student/view-report/" + quizId;
     }
 
+    @GetMapping("/delete/{questionId}")
+    public String DeleteQuestion(@PathVariable Integer questionId){
+        Question question = questionDAO.get(questionId);
 
+        Quiz quiz = quizDAO.get(question.getQuiz().getQuizId());
 
+        questionDAO.delete(questionId);
+        return "redirect:/teacher/view-quiz/"+quiz.getQuizId();
+    }
+
+    @GetMapping("/student/view-report/{quizId}")
+    public String viewReport(Model model, @PathVariable("quizId") Integer quizId, @AuthenticationPrincipal MyUserDetails loggedUser){
+        model.addAttribute("securityservice", securityService);
+        Student student = studentDAO.getByUserId(loggedUser.getUser().getUser_id());
+        Quiz quiz = quizDAO.get(quizId);
+        QuizAttempt quizAttempt = quizAttemptDAO.getByStudentAndQuizID(student.getStudentId(), quizId);
+
+        model.addAttribute("quiz", quiz);
+        model.addAttribute("student", student);
+        model.addAttribute("quizAttempt", quizAttempt);
+        List<Question> questionList = questionDAO.findByQuizId(quizId);
+        model.addAttribute("questionList", questionList);
+
+        return "viewReport";
+    }
 
 }

@@ -43,9 +43,9 @@
             <div class="form-group">
                 <label for="exampleFormControlSelect1">Skill Level</label>
                 <select class="form-control" id="exampleFormControlSelect1" name="courseDifficulty" th:value="${course.getCourseDifficulty()}">
-                    <option value="Beginner">Beginner</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Advanced">Advanced</option>
+                    <option name="courseDifficulty" value="Beginner" th:selected="${course.getCourseDifficulty.equals('Beginner')}?'selected'">Beginner</option>
+                    <option name="courseDifficulty" value="Intermediate" th:selected="${course.getCourseDifficulty.equals('Intermediate')}?'selected'">Intermediate</option>
+                    <option name="courseDifficulty" value="Advanced" th:selected="${course.getCourseDifficulty.equals('Advanced')}?'selected'">Advanced</option>
 
                 </select>
             </div>

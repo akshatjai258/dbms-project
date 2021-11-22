@@ -31,17 +31,20 @@
 
         </div>
 
-         <div class="container d-flex" >
+        <div class="container d-flex" >
             <div style=" width:100%; margin: 20px 0px; padding: 10px 20px; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
                 <div class="d-flex justify-content-between">
                     <h3>Questions</h3>
-                    <a th:href="@{'/quiz/add-question/' + ${quiz.getQuizId()}}">
-                    <button class="btn btn-primary">Add question</button>
+                    <a th:if="${securityservice.findLoggedInUser().getRole().equals('ROLE_TEACHER')}" th:href="@{'/quiz/add-question/' + ${quiz.getQuizId()}}">
+                        <button class="btn btn-primary">Add question</button>
                     </a>
+
+                    <p th:if="${securityservice.findLoggedInUser().getRole().equals('ROLE_STUDENT')}" style="margin:0">Marks Obtained : <span th:text="${quizAttempt.getMarksGot()}"> </span> / <span th:text="${quizAttempt.getTotalMarks()}"> </span>  </p>
+
                 </div>
                 <div th:each="q, iterStat : ${questionList}" style="border:1px solid black;padding:20px; margin:20px 0px">
 
-                    <div class="d-flex justify-content-between">
+                    <div th:if="${securityservice.findLoggedInUser().getRole().equals('ROLE_TEACHER')}" class="d-flex justify-content-between">
                         <a th:href="@{'/quiz/edit-question/' + ${q.getQuestionId()}}"><button class="btn btn-primary">Edit</button></a>
                         <a th:href="@{'/delete/' + ${q.getQuestionId()}}"><button class="btn btn-danger">Delete</button></a>
                     </div>

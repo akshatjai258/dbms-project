@@ -40,7 +40,8 @@
 
                     <a th:href="@{'/course/edit-details/' + ${i.getCourseId()}}"><button class="btn btn-primary mx-2"> Edit</button></a>
                     <a th:href="@{'/course/' + ${i.getCourseId()} +'/add-topic'}"><button class="btn btn-primary mx-2">Add lecture</button></a>
-                    <button class="btn btn-primary mx-2">Enrolled Students</button>
+                    <a th:href="@{'/quiz/add/' + ${i.getCourseId()} }"><button class="btn btn-primary mx-2">Add Quiz</button></a>
+
                 </div>
 
             </div>
@@ -53,13 +54,13 @@
         <nav aria-label="Page navigation example"  class="centre-hoja">
             <ul class="pagination pagination-circle pg-blue">
                 <li class="page-item" th:classappend="${currentPage == 0?'disabled':''}">
-                    <a class="page-link" th:href="@{'/courses/teacher/'+${teacher.getTeacherId()} +'/'+ ${currentPage-1}}"><span >Previous</span></a>
+                    <a class="page-link" th:href="@{'/courses/teacher/'+${teacher.getUser().getUser_id()} +'/'+ ${currentPage-1}}"><span >Previous</span></a>
                 </li>
 
-                <li  th:each="i:${#numbers.sequence(1, totalPages)}" class="page-item" th:classappend="${currentPage == (i-1)?'active':''}"><a class="page-link" th:href="@{'/courses/teacher/'+${teacher.getTeacherId()}+'/'+ ${i-1} }"><span th:text="${i}"></span></a></li>
+                <li  th:each="i:${#numbers.sequence(1, totalPages)}" class="page-item" th:classappend="${currentPage == (i-1)?'active':''}"><a class="page-link" th:href="@{'/courses/teacher/'+${teacher.getUser().getUser_id()}+'/'+ ${i-1} }"><span th:text="${i}"></span></a></li>
 
                 <li class="page-item" th:classappend="${currentPage+1 == totalPages?'disabled':''}">
-                    <a class="page-link" th:href="@{'/courses/teacher/'+${teacher.getTeacherId()} +'/'+ ${currentPage+1}}">Next</a>
+                    <a class="page-link" th:href="@{'/courses/teacher/'+${teacher.getUser().getUser_id()} +'/'+ ${currentPage+1}}">Next</a>
                 </li>
             </ul>
         </nav>

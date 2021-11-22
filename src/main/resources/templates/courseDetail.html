@@ -163,7 +163,9 @@
         </div>
 
         <div class="text-center" th:if="${isEnrolled}">
+            <a th:href="@{'/course/' + ${course.getCourseId()} + '/content'}">
             <button class="btn btn-big btn-outline-success">Enrolled! Start learning now</button>
+            </a>
         </div>
 
         <div class="text-center" th:if="${isauthor}">
@@ -295,7 +297,7 @@
     <div class="container" >
         <div class="d-flex" style=" width:100%; margin: 20px 0px; padding: 20px 20px 20px 20px; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
             <div style="width: 230px; height: 230px" class="mr-3">
-                <img  style="max-width: 100%" th:src="${author.getProfilePath()}" alt="">
+                <img  style="max-width: 100%; max-height: 230px;" th:src="${author.getProfilePath()}" alt="">
             </div>
             <div style="width: 60%;" class="d-flex flex-column">
                 <h5><span th:text="${author.getUser().getFullName()}"></span></h5>
@@ -316,10 +318,10 @@
 
     </div>
 
-    <div class="container">
+    <div th:if="${feedbacks.size()>0}" class="container">
 
 
-        <div class="d-flex flex-column" style="width:100%; margin: 20px 0px; padding: 20px 20px 0px 20px; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
+        <div  class="d-flex flex-column" style="width:100%; margin: 20px 0px; padding: 20px 20px 0px 20px; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
 
             <div class="d-flex justify-content-between">
                 <div>
@@ -340,17 +342,10 @@
                     <div class="d-flex flex-column comment-section">
                         <div class="bg-white p-2">
                             <div class="d-flex flex-row user-info"><img class="rounded-circle" th:src="${i.getStudent().getProfilePath()}" width="40">
-                                <div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name" th:text="${i.getStudent().getUser().getFullName()}"></span><span class="date text-black-50">Shared publicly - Jan 2020</span></div>
+                                <div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name" th:text="${i.getStudent().getUser().getFullName()}"></span></div>
                             </div>
                             <div class="mt-2">
                                 <p class="comment-text" th:text="${i.getContent()}"></p>
-                            </div>
-                        </div>
-                        <div class="bg-white">
-                            <div class="d-flex flex-row fs-12">
-                                <div class="like p-2 cursor"><i class="fa fa-thumbs-o-up"></i><span class="ml-1">12</span></div>
-                                <div class="like p-2 cursor"><i class="fa fa-thumbs-o-down"></i><span class="ml-1">7</span></div>
-                                <div class="like p-2 cursor"><i class="fa fa-heart"></i><span class="ml-1"></span>5</div>
                             </div>
                         </div>
 
@@ -363,7 +358,7 @@
     </div>
 
 
-    <div class="container" th:if = "${!isTeacher}">
+    <div class="container" th:if = "${!isTeacher && !notLoggedIn}">
     <div style="width:100%; margin: 20px 0px; padding: 20px 20px 10px 20px; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
     <div th:if="${!isFeedbackGiven}">
         <h4>
@@ -420,9 +415,6 @@
             </h4>
 
             <form th:action="@{'/feedback/edit/' + ${course.getCourseId()}}" method="post">
-
-
-
 
 
                 <div class="form-group">

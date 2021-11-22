@@ -12,10 +12,10 @@
 
     <div  class="d-flex flex-column justify-content-between" style="height:100vh">
         <div th:replace="home :: navbar"></div>
-        <div class="text-center" style="margin-top: 100px;">
-
+        <div style="margin-top: 100px;">
+            <div class="text-center">
             <h1>Add a new quiz</h1>
-
+            </div>
             <div class ="container">
                 <form th:action="@{'/quiz/save/' + ${course.getCourseId()}}" method="post" th:object="${quiz}" >
                     <div class="form-group">
@@ -25,10 +25,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="cprice">Time limit (in minutes)</label>
-                        <input type="number"  class="form-control" id="cprice" th:field="*{quizTime}" placeholder="Time limit for quiz (in minutes)">
-                    </div>
+
 
                     <div class="form-group">
                         <label for="exampleFormControlSelect1">Week</label>

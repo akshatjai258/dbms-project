@@ -35,7 +35,7 @@ public class TeaceherDAOImpl implements TeacherDAO{
 
     @Override
     public Teacher save(Teacher teacher) {
-        String sql = "INSERT INTO teachers (gender, country, state, city, street, pincode, house_no, user_id, profile_pic, about_me, teaching_experience) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO teachers (gender, country, state, city, street, pincode, house_no, user_id, about_me, teaching_experience) VALUES(?,?,?,?,?,?,?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator(){
             @Override
@@ -43,7 +43,7 @@ public class TeaceherDAOImpl implements TeacherDAO{
                 PreparedStatement preparedStatement = con.prepareStatement(sql, new String[] {"teacher_id"});
                 preparedStatementUtil.setParameters(preparedStatement, teacher.getGender(),
                         teacher.getCountry(), teacher.getState(), teacher.getCity(), teacher.getStreet(), teacher.getPincode(),
-                        teacher.getHouseNo(), teacher.getUser().getUser_id(), teacher.getProfilePic(), teacher.getAboutMe(), teacher.getTeachingExperience());
+                        teacher.getHouseNo(), teacher.getUser().getUser_id(), teacher.getAboutMe(), teacher.getTeachingExperience());
                 return preparedStatement;
             }
         }, keyHolder);

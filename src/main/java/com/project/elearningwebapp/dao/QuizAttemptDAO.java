@@ -9,5 +9,6 @@ public interface QuizAttemptDAO {
     public void save(QuizAttempt quizAttempt);
     public List<QuizAttempt> getByStudentId(int studentId);
     public List<QuizAttempt> getByQuizId(int quizId);
+    public QuizAttempt getByStudentAndQuizID(int studentId, int quizId);
 
 }

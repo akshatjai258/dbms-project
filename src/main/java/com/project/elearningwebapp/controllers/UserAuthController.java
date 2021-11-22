@@ -1,9 +1,11 @@
 package com.project.elearningwebapp.controllers;
 
 import com.project.elearningwebapp.dao.StudentDAO;
+import com.project.elearningwebapp.dao.TeacherDAO;
 import com.project.elearningwebapp.dao.userDAO;
 import com.project.elearningwebapp.models.Category;
 import com.project.elearningwebapp.models.Student;
+import com.project.elearningwebapp.models.Teacher;
 import com.project.elearningwebapp.models.User;
 import com.project.elearningwebapp.services.SecurityService;
 import com.project.elearningwebapp.services.SecurityServiceImpl;
@@ -33,6 +35,9 @@ public class UserAuthController {
     @Autowired
     private StudentDAO stdao;
 
+    @Autowired
+    private TeacherDAO teacherDAO;
+
 
     @GetMapping("/user/login")
     public String showLoginForm(Model model){
@@ -42,7 +47,10 @@ public class UserAuthController {
             return "login";
         }
 
-        return "redirect:/";
+        if(securityService.findLoggedInUser().getRole().equals("ROLE_STUDENT")){
+            return "redirect:/student/account";
+        }
+        return "redirect:teacher/account";
     }
 
 
@@ -68,13 +76,17 @@ public class UserAuthController {
         System.out.println(savedUser.getRole());
         if(savedUser.getRole().equals("ROLE_STUDENT")){
 
-            int stId = stdao.getStudentIdByUserId(savedUser.getUser_id());
-            Student savedStudent = stdao.getByUserId(savedUser.getUser_id());
-
-            savedStudent.setStudentId(stId);
+            Student student = new Student();
+            student.setUser(savedUser);
+            stdao.save(student);
+        }
+        else if(savedUser.getRole().equals("ROLE_TEACHER")){
+            Teacher teacher = new Teacher();
+            teacher.setUser(savedUser);
+            teacherDAO.save(teacher);
         }
 
-        return "redirect:/";
+        return "redirect:/user/login";
     }
 
 

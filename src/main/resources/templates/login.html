@@ -6,43 +6,175 @@
     <link rel="stylesheet" type = "text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <link rel="stylesheet" type = "text/css" th:href="@{/css/home.css}">
+    <style>
+        .signUp {
+            width: 50%;
+            margin: auto;
+            border: 0px;
+            border-radius: 12px;
+            background-color: #fff;
+            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+        }
+        .personLogo {
+            border: 0px;
+            border-radius: 100%;
+            padding: 25px;
+            position: absolute;
+            background-color: #fff;
+            left: 43%;
+            bottom: -40px;
+            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+        }
+        .image {
+            position: relative;
+        }
+        .text-line {
+            background-color: transparent;
+            color: black;
+            outline: none;
+            outline-style: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: solid black 1px;
+        }
+        form {
+            padding: 0 2rem 1rem;
+        }
+        .flname {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+        }
+        .flname div {
+            width: 50%;
+        }
+        label {
+            display: block;
+            margin-top: 0.8rem;
+            font-size: 1rem;
+        }
+        input {
+            font-size: 1rem;
+            margin: 0.5rem 0 0;
+            padding:0.3rem 0.6rem;
+            width: 80%;
+        }
+        .submitButtonSignUp {
+            background-color: #03b97c;
+            color: white;
+            padding: 1rem;
+            width: 94%;
+            border: 0px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            margin: 1rem 0;
+        }
+        .checkboxes {
+            display: flex;
+        }
+        .bottompart {
+            border-top: 1px solid rgba(211, 211, 211, 0.692);
+        }
+        .bottompart h3 {
+            font-size: 1.2rem;
+        }
 
+    </style>
 </head>
 <body>
 
 <div  class="d-flex flex-column justify-content-between" style="height:100vh">
 <div th:replace="home :: navbar"></div>
-<div class="container-fluid text-center " style="margin-top: 150px;">
 
-    <form th:action="@{/user/login}" method="post" style="max-width: 350px; margin: 0 auto;">
-
-        <div th:if="${param.error}">
-            <div class="alert alert-primary" role="alert">
-                [[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]
-            </div>
+    <div class="signUp" style="margin-top: 100px; margin-bottom: 50px; ">
+        <div th:if="${param.logout}" class="alert alert-warning alert-dismissible fade show" role="alert">
+            <span class="text-warning">You have been logged out.</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
 
-        <div th:if="${param.logout}">
-            <p class="text-warning">You have been logged out.</p>
+        <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            [[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
 
-        <div class="border border-secondary p-3 rounded">
-            <p>Login here</p>
-            <p>
-                <input type="text" name="username" class="form-control" placeholder="username" required autofocus/>
-            </p>
-            <p>
-                <input type="password" name="password" class="form-control" placeholder="Password" required />
-            </p>
-            <p>
-                <input type="checkbox" name="remember-me" />&nbsp;Remember Me
-            </p>
-            <p>
-                <input type="submit" value="Login" class="btn btn-primary" />
-            </p>
+
+
+
+
+
+        <div class="image">
+            <img
+                    style="
+            width: 100%;
+            border-radius: 12px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+          "
+                    th:src="@{'/images/assets/banner-2.jpg'}"
+                    alt=""
+            />
+            <img class="personLogo"th:src="@{'/images/assets/lock.png'}" alt="" />
         </div>
-    </form>
-</div>
+        <div>
+            <h2 style="text-align: center; margin-top: 2.8rem">
+                Login Your Account
+            </h2>
+            <form  th:action="@{/user/login}" method="post">
+                <div style="width: 100%">
+                    <label for="username">Your Username</label>
+                    <input
+                            class="text-line"
+                            type="text"
+                            name="username"
+                            id="username"
+                            placeholder="username"
+                            style="width: 90%"
+                    />
+                </div>
+                <div style="width: 100%">
+                    <label for="password">Your Password</label>
+                    <input
+                            class="text-line"
+                            type="password"
+                            name="password"
+                            id="password"
+                            placeholder="*********"
+                            style="width: 90%"
+                    />
+                </div>
+                <div class="d-flex justify-content-start">
+                    <label for="remember-me">Remember Me</label>
+                    <input style="width:50px; margin-top:20px" type="checkbox" id="remember-me" name="remember-me" />&nbsp;
+                </div>
+                <div style="width: 100%">
+                    <button type="submit" class="submitButtonSignUp">Login</button>
+                </div>
+                <div
+                        style="display: flex; justify-content: space-between"
+                        class="bottompart"
+                >
+                    <div>
+                        <h3 style="font-weight: 400">
+                            Don't have a account?
+                            <a
+                                    style="text-decoration: none; color: #03b97c"
+                                    th:href="@{/user/register}"
+                            >SignUp</a
+                            >
+                        </h3>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+
 <div th:replace="home :: footer"></div>
 </div>
 </body>

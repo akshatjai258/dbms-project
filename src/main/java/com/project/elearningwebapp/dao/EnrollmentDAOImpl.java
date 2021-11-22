@@ -1,10 +1,15 @@
 package com.project.elearningwebapp.dao;
 
+import com.project.elearningwebapp.dao.rowmappers.CourseRowMapper;
 import com.project.elearningwebapp.dao.rowmappers.EnrollmentRowMapper;
 import com.project.elearningwebapp.models.Course;
 import com.project.elearningwebapp.models.Enrollment;
 import com.project.elearningwebapp.models.Student;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -71,14 +76,22 @@ public class EnrollmentDAOImpl implements EnrollmentDAO{
     }
 
     @Override
-    public List<Course> coursesEnrolled(int studentId) {
+    public Page<Course> coursesEnrolled(int studentId, Pageable pageable) {
         String sql = "SELECT * FROM enrollments NATURAL JOIN teachers  NATURAL JOIN users NATURAL JOIN courses NATURAL JOIN categories WHERE student_id=?";
+        Sort.Order order = !pageable.getSort().isEmpty() ? pageable.getSort().toList().get(0) : Sort.Order.by("course_id");
+        sql += " ORDER BY " + order.getProperty() + " "
+                + order.getDirection().name()
+                + " LIMIT " + pageable.getPageSize() + " OFFSET " + pageable.getOffset();
+
+
+
         List<Enrollment>lst = jdbcTemplate.query(sql, new Object[]{studentId}, new EnrollmentRowMapper());
-        List<Course>ans = new ArrayList<Course>(lst.size());
+        List<Course>courses = new ArrayList<Course>(lst.size());
         for (Enrollment e: lst) {
-            ans.add(e.getCourse());
+            courses.add(e.getCourse());
         }
-        return ans;
+
+        return new PageImpl<Course>(courses, pageable, count_new(studentId));
     }
 
     @Override
@@ -88,4 +101,12 @@ public class EnrollmentDAOImpl implements EnrollmentDAO{
         return jdbcTemplate.queryForObject(sql, new Object[]{courseId}, Integer.class);
 
     }
+
+    @Override
+    public Integer count_new(int studentId) {
+        String sql = "SELECT COUNT(*) FROM enrollments where student_id =?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{studentId}, Integer.class);
+    }
+
+
 }

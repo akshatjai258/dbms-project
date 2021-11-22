@@ -48,9 +48,9 @@
             <div class="form-group">
                 <label for="exampleFormControlSelect1">Skill Level</label>
                 <select class="form-control" id="exampleFormControlSelect1" th:field="*{courseDifficulty}">
-                    <option value="Beginner">Beginner</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Advanced">Advanced</option>
+                    <option name="courseDifficulty" value="Beginner">Beginner</option>
+                    <option name="courseDifficulty" value="Intermediate">Intermediate</option>
+                    <option name="courseDifficulty" value="Advanced">Advanced</option>
 
                 </select>
             </div>
@@ -76,7 +76,8 @@
             <label for="fileImage">Course Thumbnail</label>
             <input type="file" class = "form-control" id ="fileImage" name="fileImage"/>
             <div>
-                <img src="#" id="thumbnail" alt="imagePreview">
+                <img src="#" id="thumbnail" alt="imagePreview"  style="max-width: 200px; max-height: 200px;">
+
             </div>
 
             <button type="submit" class="btn btn-primary">Submit</button>

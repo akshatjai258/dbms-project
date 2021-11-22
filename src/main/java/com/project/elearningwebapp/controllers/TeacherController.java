@@ -39,12 +39,13 @@ public class TeacherController {
     @Autowired
     private TopicDAO topicDAO;
 
-    @GetMapping("/courses/teacher/{teacherId}/{page}")
-    public String Mycourses(@PathVariable(value = "page") Integer page, @PathVariable(value = "teacherId") Integer teacherID, @AuthenticationPrincipal MyUserDetails loggedUser, Model model){
+    @GetMapping("/courses/teacher/{userId}/{page}")
+    public String Mycourses(@PathVariable(value = "page") Integer page, @PathVariable(value = "userId") Integer userId, @AuthenticationPrincipal MyUserDetails loggedUser, Model model){
+        Integer teacherID = teacherDAO.getTeacherIdByUserId(userId);
         Teacher teacher = teacherDAO.get(teacherID);
 
         Boolean isauthor = false;
-        if(loggedUser.getUser().getRole().equals("ROLE_TEACHER") && loggedUser.getUser().getUser_id() == teacher.getUser().getUser_id()){
+        if(loggedUser!=null && loggedUser.getUser().getRole().equals("ROLE_TEACHER") && loggedUser.getUser().getUser_id() == teacher.getUser().getUser_id()){
 
             isauthor = true;
         }
@@ -70,8 +71,16 @@ public class TeacherController {
     }
 
     @GetMapping("/user/teacher/profile/{userId}")
-    public String viewTeacherProfile(Model model, @PathVariable Integer userId){
+    public String viewTeacherProfile(Model model, @PathVariable Integer userId, @AuthenticationPrincipal MyUserDetails loggedUser){
+
+
         Teacher teacher = teacherDAO.getByUserId(userId);
+        Boolean isauthor = false;
+        if(loggedUser!=null &&  loggedUser.getUser().getRole().equals("ROLE_TEACHER") && loggedUser.getUser().getUser_id() == teacher.getUser().getUser_id()){
+
+            isauthor = true;
+        }
+        model.addAttribute("isauthor", isauthor);
         Integer teacherId = teacherDAO.getTeacherIdByUserId(userId);
         model.addAttribute("teacher", teacher);
         model.addAttribute("securityservice", securityService);

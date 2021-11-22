@@ -42,4 +42,19 @@ public class QuizAttemptDAOImpl implements QuizAttemptDAO{
         List<QuizAttempt>attempts = jdbcTemplate.query(sql, new Object[]{quizId}, new QuizAttemptRowMapper());
         return attempts;
     }
+
+    @Override
+    public QuizAttempt getByStudentAndQuizID(int studentId, int quizId) {
+        String sql1 = "SELECT count(*) FROM quiz_attempts Natural JOIN quizzes NATURAL JOIN students NATURAL JOIN users where quiz_id = ? AND student_id=?";
+        if(jdbcTemplate.queryForObject(sql1, new Object[]{quizId, studentId}, Integer.class) == 0){
+            return null;
+        }
+
+        String sql = "SELECT * FROM quiz_attempts Natural JOIN quizzes NATURAL JOIN students NATURAL JOIN users where quiz_id = ? AND student_id=?";
+
+
+        QuizAttempt attempt = (QuizAttempt) jdbcTemplate.queryForObject(sql, new Object[]{quizId, studentId}, new QuizAttemptRowMapper());
+        return attempt;
+
+    }
 }

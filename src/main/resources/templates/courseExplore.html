@@ -147,13 +147,13 @@
             <nav aria-label="Page navigation example" >
                 <ul class="pagination pagination-circle pg-blue">
                     <li class="page-item" th:classappend="${currentPage == 0?'disabled':''}">
-                        <a class="page-link" th:href="@{'/course/explore/' + ${currentPage-1}}"><span >Previous</span></a>
+                        <a class="page-link" th:href="@{'/course/explore/' + ${currentPage-1 + queryString}}"><span >Previous</span></a>
                     </li>
 
                     <li  th:each="i:${#numbers.sequence(1, totalPages)}" class="page-item" th:classappend="${currentPage == (i-1)?'active':''}"><a class="page-link" th:href="@{'/course/explore/' + ${i-1 + queryString} }"><span th:text="${i}"></span></a></li>
 
                     <li class="page-item" th:classappend="${currentPage+1 == totalPages?'disabled':''}">
-                        <a class="page-link" th:href="@{'/course/explore/' + ${currentPage+1}}">Next</a>
+                        <a class="page-link" th:href="@{'/course/explore/' + ${currentPage+1 + queryString}}">Next</a>
                     </li>
                 </ul>
             </nav>

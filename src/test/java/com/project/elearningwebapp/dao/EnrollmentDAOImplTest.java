@@ -65,6 +65,6 @@ class EnrollmentDAOImplTest {
 
     @Test
     void isEnrolled() {
-        dao.coursesEnrolled(38);
+
     }
 }
