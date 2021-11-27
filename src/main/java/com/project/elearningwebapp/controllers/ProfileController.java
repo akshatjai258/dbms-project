@@ -115,11 +115,11 @@ public class ProfileController {
             student.setNoOfPhotosUploaded(x);
             fileName = id+"_"+fileName;
 
-            File fi = new ClassPathResource("/static/images").getFile();
+//            File fi = new ClassPathResource("/static/images").getFile();
+            Path uploadPath = Paths.get("src", "main", "resources", "static", "images", "profile", "student");
+//            String uploadDir = fi.getAbsolutePath() +"/profile/student/";
 
-            String uploadDir = fi.getAbsolutePath() +"/profile/student/";
-
-            Path uploadPath = Paths.get(uploadDir);
+//            Path uploadPath = Paths.get(uploadDir);
             if(!Files.exists(uploadPath)){
                 Files.createDirectories(uploadPath);
             }
