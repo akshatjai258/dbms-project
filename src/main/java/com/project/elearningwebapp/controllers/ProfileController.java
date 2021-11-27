@@ -127,6 +127,7 @@ public class ProfileController {
             try {
                 InputStream inputStream = multipartFile.getInputStream();
                 Path filePath = uploadPath.resolve(fileName);
+                System.out.println(filePath);
 
                 Files.copy(inputStream,filePath, StandardCopyOption.REPLACE_EXISTING);
             }catch (IOException e){
