@@ -116,7 +116,7 @@ public class ProfileController {
             fileName = id+"_"+fileName;
 
 //            File fi = new ClassPathResource("/static/images").getFile();
-            Path uploadPath = Paths.get("src", "main", "resources", "static", "images", "profile", "student");
+            Path uploadPath = Paths.get("src", "main", "webapp", "uploads");
 //            String uploadDir = fi.getAbsolutePath() +"/profile/student/";
 
 //            Path uploadPath = Paths.get(uploadDir);
