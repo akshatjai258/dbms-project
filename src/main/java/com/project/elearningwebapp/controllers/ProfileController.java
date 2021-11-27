@@ -115,35 +115,35 @@ public class ProfileController {
             student.setNoOfPhotosUploaded(x);
             fileName = id+"_"+fileName;
 
-//            File fi = new ClassPathResource("/static/images").getFile();
-            Path uploadPath = Paths.get("src", "main", "webapp");
-//            String uploadDir = fi.getAbsolutePath() +"/profile/student/";
-            String uploadDir = "src/main/webapp/";
-//            Path uploadPath = Paths.get(uploadDir);
+            File fi = new ClassPathResource("/static/images").getFile();
+
+            String uploadDir = fi.getAbsolutePath() +"/profile/student/";
+
+            Path uploadPath = Paths.get(uploadDir);
             if(!Files.exists(uploadPath)){
                 Files.createDirectories(uploadPath);
             }
 
-            try {
-                // Get the file and save it somewhere
-                byte[] bytes = multipartFile.getBytes();
-                Path path = Paths.get(uploadDir + fileName);
-                System.out.println(path);
-                Files.write(path, bytes);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
 //            try {
-//                InputStream inputStream = multipartFile.getInputStream();
-//                Path filePath = uploadPath.resolve(fileName);
-//                System.out.println(filePath);
+//                // Get the file and save it somewhere
+//                byte[] bytes = multipartFile.getBytes();
+//                Path path = Paths.get(uploadDir + fileName);
+//                System.out.println(path);
+//                Files.write(path, bytes);
 //
-//                Files.copy(inputStream,filePath, StandardCopyOption.REPLACE_EXISTING);
-//            }catch (IOException e){
-//                throw new IOException("file could not be saved");
+//            } catch (IOException e) {
+//                e.printStackTrace();
 //            }
+
+            try {
+                InputStream inputStream = multipartFile.getInputStream();
+                Path filePath = uploadPath.resolve(fileName);
+                System.out.println(filePath);
+
+                Files.copy(inputStream,filePath, StandardCopyOption.REPLACE_EXISTING);
+            }catch (IOException e){
+                throw new IOException("file could not be saved");
+            }
         }
 
         student.setProfilePic(fileName);
