@@ -115,7 +115,7 @@ public class ProfileController {
             student.setNoOfPhotosUploaded(x);
             fileName = id+"_"+fileName;
 
-            File fi = new ClassPathResource("static/images").getFile();
+            File fi = new ClassPathResource("/static/images").getFile();
 
             String uploadDir = fi.getAbsolutePath() +"/profile/student/";
 
