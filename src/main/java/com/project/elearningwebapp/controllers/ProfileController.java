@@ -128,6 +128,7 @@ public class ProfileController {
                 // Get the file and save it somewhere
                 byte[] bytes = multipartFile.getBytes();
                 Path path = Paths.get(uploadDir + fileName);
+                System.out.println(path);
                 Files.write(path, bytes);
 
             } catch (IOException e) {
