@@ -116,23 +116,33 @@ public class ProfileController {
             fileName = id+"_"+fileName;
 
 //            File fi = new ClassPathResource("/static/images").getFile();
-            Path uploadPath = Paths.get("src", "main", "webapp", "uploads");
+            Path uploadPath = Paths.get("src", "main", "resources", "static", "images", "profile", "student");
 //            String uploadDir = fi.getAbsolutePath() +"/profile/student/";
-
+            String uploadDir = "src/main/resources/static/images/profile/student/";
 //            Path uploadPath = Paths.get(uploadDir);
             if(!Files.exists(uploadPath)){
                 Files.createDirectories(uploadPath);
             }
 
             try {
-                InputStream inputStream = multipartFile.getInputStream();
-                Path filePath = uploadPath.resolve(fileName);
-                System.out.println(filePath);
+                // Get the file and save it somewhere
+                byte[] bytes = multipartFile.getBytes();
+                Path path = Paths.get(uploadDir + fileName);
+                Files.write(path, bytes);
 
-                Files.copy(inputStream,filePath, StandardCopyOption.REPLACE_EXISTING);
-            }catch (IOException e){
-                throw new IOException("file could not be saved");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
+//            try {
+//                InputStream inputStream = multipartFile.getInputStream();
+//                Path filePath = uploadPath.resolve(fileName);
+//                System.out.println(filePath);
+//
+//                Files.copy(inputStream,filePath, StandardCopyOption.REPLACE_EXISTING);
+//            }catch (IOException e){
+//                throw new IOException("file could not be saved");
+//            }
         }
 
         student.setProfilePic(fileName);
