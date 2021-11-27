@@ -468,7 +468,7 @@ public class CourseController {
             fileName = oldCourse.getCourseThumbnail();
         }
         else{
-            String uploadDir = fi.getAbsolutePath() +"/course-thumbnails/"+ courseId;
+            String uploadDir = fi.getAbsolutePath() +"/course-thumbnails/"+ courseId +"/";
 
             Path uploadPath = Paths.get(uploadDir);
 
@@ -480,7 +480,7 @@ public class CourseController {
             try {
                 InputStream inputStream = multipartFile.getInputStream();
                 Path filePath = uploadPath.resolve(fileName);
-
+                System.out.println(filePath);
                 Files.copy(inputStream,filePath, StandardCopyOption.REPLACE_EXISTING);
             }catch (IOException e){
                 throw new IOException("file could not be saved");

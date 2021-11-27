@@ -144,7 +144,8 @@ public class QuizController {
         System.out.println(question);
         question.setQuestionId(questionId);
         questionDAO.update(question);
-        return "redirect:/";
+        Quiz quiz = quizDAO.get(questionDAO.get(questionId).getQuiz().getQuizId());
+        return "redirect:/teacher/view-quiz/" + quiz.getQuizId();
 
     }
 
@@ -174,6 +175,8 @@ public class QuizController {
         FormBean formBean = new FormBean(arrayList);
         model.addAttribute("formBean", formBean);
 
+        Course course = courseDAO.get(quiz.getCourse().getCourseId());
+        model.addAttribute("course", course);
         return "attemptQuiz";
     }
 
