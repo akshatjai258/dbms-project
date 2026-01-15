@@ -153,6 +153,6 @@ public class Course {
     }
 
     public String getThumbnailPath(){
-        return "/images/course-thumbnails/" + this.getCourseId() +"/"+ this.getCourseThumbnail();
+        return "/uploads/images/course-thumbnails/" + this.getCourseId() +"/"+ this.getCourseThumbnail();
     }
 }

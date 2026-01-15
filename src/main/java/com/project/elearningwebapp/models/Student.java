@@ -137,7 +137,7 @@ public class Student {
     }
 
     public String getProfilePath(){
-        return "/images/profile/student/" + this.getProfilePic();
+        return "/uploads/images/profile/student/" + this.getProfilePic();
     }
 
     @Override

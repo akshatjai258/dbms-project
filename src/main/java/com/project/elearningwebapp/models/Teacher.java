@@ -139,7 +139,7 @@ public class Teacher {
     }
 
     public String getProfilePath(){
-        return "/images/profile/teacher/" + this.getProfilePic();
+        return "/uploads/images/profile/teacher/" + this.getProfilePic();
     }
 
     public String getPincode() {
