@@ -10,6 +10,7 @@ import com.project.elearningwebapp.models.Teacher;
 import com.project.elearningwebapp.models.User;
 import com.project.elearningwebapp.services.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -43,6 +44,8 @@ public class ProfileController {
     @Autowired
     private TeacherDAO tdao;
 
+    @Value("${app.upload.dir}")
+    private String volumePath;
 
 
     @GetMapping("/user/account")
@@ -115,7 +118,7 @@ public class ProfileController {
             student.setNoOfPhotosUploaded(x);
             fileName = id+"_"+fileName;
 
-            File fi = new ClassPathResource("static/images").getFile();
+            File fi = new ClassPathResource("/static/images").getFile();
 
             String uploadDir = fi.getAbsolutePath() +"/profile/student/";
 
@@ -124,9 +127,21 @@ public class ProfileController {
                 Files.createDirectories(uploadPath);
             }
 
+//            try {
+//                // Get the file and save it somewhere
+//                byte[] bytes = multipartFile.getBytes();
+//                Path path = Paths.get(uploadDir + fileName);
+//                System.out.println(path);
+//                Files.write(path, bytes);
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+
             try {
                 InputStream inputStream = multipartFile.getInputStream();
                 Path filePath = uploadPath.resolve(fileName);
+                System.out.println(filePath);
 
                 Files.copy(inputStream,filePath, StandardCopyOption.REPLACE_EXISTING);
             }catch (IOException e){
@@ -190,9 +205,9 @@ public class ProfileController {
             teacher.setNoOfPhotosUploaded(x);
             fileName = id+"_"+fileName;
 
-            File fi = new ClassPathResource("static/images").getFile();
 
-            String uploadDir = fi.getAbsolutePath() +"/profile/teacher/";
+
+            String uploadDir = volumePath +"/images/profile/teacher/";
 
             Path uploadPath = Paths.get(uploadDir);
             if(!Files.exists(uploadPath)){

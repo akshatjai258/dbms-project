@@ -8,6 +8,7 @@ import static java.lang.Math.min;
 import com.project.elearningwebapp.dao.TopicDAO;
 import com.project.elearningwebapp.models.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.ResourceRegion;
@@ -28,17 +29,20 @@ public class VideoStreamController {
     @Autowired
     private TopicDAO topicDAO;
 
+    @Value("${app.upload.dir}")
+    private String volumePath;
+
 
     private static final long CHUNK_SIZE = 1000000L;
-    public static final String VideoUploadingDir = System.getProperty("user.dir") + "/target/classes/static/";
+
 
     @GetMapping(value = "/course/lecture/{topicId}", produces = "application/octet-stream")
     public ResponseEntity<ResourceRegion> getVideo(@RequestHeader(value = "Range", required = false) String rangeHeader, @PathVariable("topicId") int topicId, Model model)
             throws IOException {
 
 
-        if (!new File(VideoUploadingDir).exists()) {
-            new File(VideoUploadingDir).mkdirs();
+        if (!new File(volumePath ).exists()) {
+            new File(volumePath).mkdirs();
         }
         Topic topic = topicDAO.get(topicId);
         String videoPath = topic.getVideoPath();
@@ -47,7 +51,7 @@ public class VideoStreamController {
     }
 
     public ResponseEntity<ResourceRegion> getVideoRegion(String rangeHeader, String videoPath) throws IOException {
-        FileUrlResource videoResource = new FileUrlResource(VideoUploadingDir + videoPath);
+        FileUrlResource videoResource = new FileUrlResource(volumePath + videoPath);
         ResourceRegion resourceRegion = getResourceRegion(videoResource, rangeHeader);
 
         return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
