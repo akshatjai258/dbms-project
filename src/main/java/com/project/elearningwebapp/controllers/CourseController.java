@@ -120,7 +120,7 @@ public class CourseController {
         model.addAttribute("categories", categories);
         model.addAttribute("queryString", queryString);
 
-        String mainDir = System.getProperty("user.dir") + "/target/classes/static/";
+        String mainDir = volumePath + "/";
         model.addAttribute("mainDir", mainDir);
         return "courseExplore";
     }
