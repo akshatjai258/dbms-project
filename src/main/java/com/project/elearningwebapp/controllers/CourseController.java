@@ -4,6 +4,7 @@ import com.project.elearningwebapp.dao.*;
 import com.project.elearningwebapp.models.*;
 import com.project.elearningwebapp.services.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -59,6 +60,8 @@ public class CourseController {
     private QuizAttemptDAO quizAttemptDAO;
 
 
+    @Value("${app.upload.dir}")
+    private String volumePath;
 
     @GetMapping("/course/explore/{page}")
     public String courseExplore(@PathVariable(value = "page") Integer page, Model model,
@@ -156,12 +159,11 @@ public class CourseController {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
         course.setCourseThumbnail(fileName);
-        File fi = new ClassPathResource("static/images").getFile();
         System.out.println(course);
 
         Course savedCourse = dao.save(course);
 
-        String uploadDir = fi.getAbsolutePath() +"/course-thumbnails/"+ savedCourse.getCourseId();
+        String uploadDir = volumePath +"/images/course-thumbnails/"+ savedCourse.getCourseId();
 
         Path uploadPath = Paths.get(uploadDir);
 
@@ -219,12 +221,12 @@ public class CourseController {
 
         topic.setTopicLecture(videolecture);
 
-        File fi1 = new ClassPathResource("static/videos").getFile();
+
 
         Topic savedTopic = topicDAO.save(topic);
 
 
-        String VideouploadDir = fi1.getAbsolutePath() + "/" + courseId +"/";
+        String VideouploadDir = volumePath + "/videos/" + courseId +"/";
         Path VideouploadPath = Paths.get(VideouploadDir);
 
         if(!Files.exists(VideouploadPath)){
@@ -460,7 +462,7 @@ public class CourseController {
 
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
-        File fi = new ClassPathResource("static/images").getFile();
+
         System.out.println(course);
 
         if(multipartFile.isEmpty()){
@@ -468,7 +470,7 @@ public class CourseController {
             fileName = oldCourse.getCourseThumbnail();
         }
         else{
-            String uploadDir = fi.getAbsolutePath() +"/course-thumbnails/"+ courseId +"/";
+            String uploadDir = volumePath +"/images/course-thumbnails/"+ courseId +"/";
 
             Path uploadPath = Paths.get(uploadDir);
 
@@ -706,7 +708,6 @@ public class CourseController {
         String videolecture = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
 
-        File fi1 = new ClassPathResource("static/videos").getFile();
         topic.setTopicId(t1.getTopicId());
         topic.setCourse(course);
         topic.setTopicNumber(t1.getTopicNumber());
@@ -718,7 +719,7 @@ public class CourseController {
             videolecture = t1.getTopicLecture();
         }
         else{
-            String VideouploadDir = fi1.getAbsolutePath() + "/" + course.getCourseId() +"/";
+            String VideouploadDir = volumePath + "/videos/" + course.getCourseId() +"/";
             Path VideouploadPath = Paths.get(VideouploadDir);
 
             if(!Files.exists(VideouploadPath)){

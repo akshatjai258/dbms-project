@@ -4,6 +4,7 @@ import com.project.elearningwebapp.dao.CategoryDAOImpl;
 import com.project.elearningwebapp.models.Category;
 import com.project.elearningwebapp.services.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +32,9 @@ public class CategoryController {
     @Autowired
     private SecurityService securityService;
 
+    @Value("${app.upload.dir}")
+    private String volumePath;
+
     @GetMapping("/category/new")
     public String main(Model model){
         Category category = new Category();
@@ -48,13 +52,12 @@ public class CategoryController {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
         category.setLogo(fileName);
-        File fi = new ClassPathResource("static/images").getFile();
 
         Category savedCategory = dao.save(category);
 
-        String uploadDir = fi.getAbsolutePath() +"/category-logos/"+ savedCategory.getCategoryId();
+        String categoryDir = volumePath +"/images/category-logos/"+ savedCategory.getCategoryId();
 
-        Path uploadPath = Paths.get(uploadDir);
+        Path uploadPath = Paths.get(categoryDir);
 
         if(!Files.exists(uploadPath)){
             Files.createDirectories(uploadPath);
